@@ -3,6 +3,7 @@
  */
  
 #include "assignment.h"
+#include <unistd.h>
 #define PI 3.14159265
 using namespace std;
 
@@ -77,9 +78,10 @@ void drawScene(int scene, float runTime) {
     if(t > 360) {
         t = 0;
     }
-    drawCircle(yellow, glm_rotate(t*2, glm::vec3(0,0,1)) * carsS * glm_translate(-35.5f, 0.0f, 0.0f));
-    drawCircle(red, glm_rotate(t, glm::vec3(0,0,1)) * carsS * glm_translate(-40.0f, 0.0f, 0.0f));
+    drawCircle(yellow, glm_rotate(t, glm::vec3(0,0,1)) * carsS * glm_translate(-35.5f, 0.0f, 0.0f));
+    drawCircle(red, glm_rotate(t*2, glm::vec3(0,0,1)) * carsS * glm_translate(-40.0f, 0.0f, 0.0f));
     t++;
+    usleep(10000);
 }
 
 
