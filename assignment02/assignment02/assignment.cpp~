@@ -79,7 +79,9 @@ void drawScene(int scene, float runTime) {
     drawCircle(red, glm_rotate(t, glm::vec3(0,0,1)) * carsS * glm_translate(-40.0f, 0.0f, 0.0f));
     t++;
 
-   
+    //drawCircle(blue, rotate1 * carsS * translate);
+
+    //drawCircle( glm::vec3(1.0f, 0.0f, 0.0f), glm::rotate( 85.0f, glm::vec3(0,0,1)) * glm::scale(0.1f,0.5f, 1.0f) * glm::translate(0.5f,0.5f, 0.0f));
 }
 
 
