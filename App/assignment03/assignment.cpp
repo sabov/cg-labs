@@ -88,6 +88,9 @@ glm::mat4 buildFrustum( float phiInDegree, float aspectRatio, float near, float 
     // Add your code here:
     // ====================================================================
 
+
+    fm = glm::perspective(270.0f, 4.0f / 3.0f, 0.1f, 1000.f);
+
     // ====================================================================
     // End Exercise code
     // ====================================================================
@@ -103,7 +106,7 @@ glm::mat4 lookAt(const glm::vec3 &camPos, const glm::vec3 &viewDirection, const 
     // Add your code here:
     // ====================================================================
 
-    glm::vec3 r = glm::normalize(glm::cross(viewDirection, up));
+    glm::vec3 r = glm::normalize(glm::cross(up, viewDirection));
     glm::vec3 u = glm::normalize(up);
     glm::vec3 d = glm::normalize(viewDirection);
 
@@ -137,7 +140,7 @@ glm::mat4 lookAt(const glm::vec3 &camPos, const glm::vec3 &viewDirection, const 
     glm::mat4 translation = glm::make_mat4(tMatrix);
 
     // Combine the orientation and translation to compute the view matrix
-    return ( translation * orientation );
+    return glm::translate(orientation, glm::vec3(camPos.x, camPos.y, -camPos.z));
 
     // ====================================================================
     // End Exercise code
@@ -152,6 +155,8 @@ void resizeCallback( int newWidth, int newHeight )
     // projection matrix setup for programming exercise part d:
     // Add your code here:
     // ====================================================================
+
+    g_ProjectionMatrix = buildFrustum(1,1,1,1);
 
     // ====================================================================
     // End Exercise code
