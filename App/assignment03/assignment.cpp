@@ -15,6 +15,15 @@ void printStudents()
 	cout << "Student Name 3, matrikel number 3" << endl;
 }
 
+//debug func
+std::ostream &operator<< (std::ostream &out, const glm::vec3 &vec) {
+    out << "{" 
+        << vec.x << " " << vec.y << " "<< vec.z 
+        << "}";
+
+    return out;
+}
+
 
 glm::mat4 g_ViewMatrix;
 glm::mat4 g_ProjectionMatrix;
@@ -88,12 +97,47 @@ glm::mat4 buildFrustum( float phiInDegree, float aspectRatio, float near, float 
 
 glm::mat4 lookAt(const glm::vec3 &camPos, const glm::vec3 &viewDirection, const glm::vec3 &up) {
 
+
     // ====================================================================
     // Lookat for programming exercise part a:
     // Add your code here:
     // ====================================================================
 
-    //return matrix;
+    glm::vec3 r = glm::normalize(glm::cross(viewDirection, up));
+    glm::vec3 u = glm::normalize(up);
+    glm::vec3 d = glm::normalize(viewDirection);
+
+    float oMatrix [16] = {
+         r.x,  r.y,  r.z, 0,
+         u.x,  u.y,  u.z, 0,
+        -d.x, -d.y, -d.z, 0,
+        0, 0, 0, 1
+    };
+    //float oMatrix [16] = {
+        //r.x, u.y, -d.z, 0,
+        //r.y, u.y, -d.y, 0,
+        //r.z, u.z, -d.z, 0,
+        //0, 0, 0, 1
+    //};
+    glm::mat4 orientation = glm::make_mat4(oMatrix);
+
+    //float tMatrix [16] = {
+          //1,      0,      0,     camPos.x,
+          //0,      1,      0,     camPos.y,
+          //0,      0,      1,     -camPos.z,
+          //0,      0,      0,        1
+    //};
+    float tMatrix [16] = {
+          1,      0,      0,     0,
+          0,      1,      0,     0,
+          0,      0,      1,     0,
+          camPos.x,      camPos.y,      -camPos.z,        1
+    };
+
+    glm::mat4 translation = glm::make_mat4(tMatrix);
+
+    // Combine the orientation and translation to compute the view matrix
+    return ( translation * orientation );
 
     // ====================================================================
     // End Exercise code
@@ -233,6 +277,8 @@ void drawCar( float angle, int lane, glm::vec3 color )
 
 void drawScene(int scene, float runTime) {
 
+    glm::vec3 pos = glm::vec3(0, -1, 1);
+    g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
     float angle1 = -2.0f*M_PI*runTime/60.0f;
 
 	if (scene != 4) {
