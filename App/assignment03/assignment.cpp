@@ -282,8 +282,6 @@ void drawCar( float angle, int lane, glm::vec3 color )
 
 void drawScene(int scene, float runTime) {
 
-    glm::vec3 pos = glm::vec3(0, -1, 1);
-    g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
     float angle1 = -2.0f*M_PI*runTime/60.0f;
 
 	if (scene != 4) {
@@ -293,6 +291,8 @@ void drawScene(int scene, float runTime) {
         // Add your code here:
         // =====================================================
 
+        glm::vec3 pos = glm::vec3(0, -1, 1);
+        g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
         // =====================================================
         // End Exercise code
@@ -315,6 +315,10 @@ void drawScene(int scene, float runTime) {
         // Moving camera for programming exercise part e:
         // Add your code here:
         // =====================================================
+
+        //glm::vec3 pos = glm::vec3(0, 0, height);
+        glm::vec3 pos = glm::vec3(sin(angle1), cos(angle1), height );
+        g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
 
         // =====================================================
