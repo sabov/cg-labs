@@ -89,7 +89,7 @@ glm::mat4 buildFrustum( float phiInDegree, float aspectRatio, float near, float 
     // ====================================================================
 
 
-    fm = glm::perspective(270.0f, 4.0f / 3.0f, 0.1f, 1000.f);
+    fm = glm::perspective(90.0f, 4.0f / 3.0f, 0.1f, 1000.f);
 
     // ====================================================================
     // End Exercise code
@@ -292,7 +292,7 @@ void drawScene(int scene, float runTime) {
         // =====================================================
 
         glm::vec3 pos = glm::vec3(0, -1, 1);
-        g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
+        g_ViewMatrix = glm::lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
         // =====================================================
         // End Exercise code
@@ -302,7 +302,7 @@ void drawScene(int scene, float runTime) {
 
         // rotate around track for the other parts, looking at the center:
         glm::vec3 pos = glm::vec3(1.5f*sin(runTime), 1.5f*cos(runTime), 1.0f );
-        g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
+        g_ViewMatrix = glm::lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
 	}
 
@@ -310,16 +310,14 @@ void drawScene(int scene, float runTime) {
 
         float height = -sin(angle1*2.0) * 0.1;
 
-
         // =====================================================
         // Moving camera for programming exercise part e:
         // Add your code here:
         // =====================================================
 
-        //glm::vec3 pos = glm::vec3(0, 0, height);
-        glm::vec3 pos = glm::vec3(sin(angle1), cos(angle1), height );
-        g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
-
+        glm::vec3 pos = glm::vec3(0.85 * cos(angle1), 0.85 * sin(angle1), height);
+        glm::vec3 pos1 = glm::vec3(0.85 * cos(angle1 - 0.1), 0.85 * sin(angle1 - 0.1), height);
+        g_ViewMatrix = glm::lookAt( pos, pos1, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
         // =====================================================
         // End Exercise code
