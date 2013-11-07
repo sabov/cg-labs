@@ -100,7 +100,16 @@ glm::mat4 buildFrustum( float phiInDegree, float aspectRatio, float near, float 
     // ====================================================================
 
 
-    fm = glm::perspective(90.0f, 4.0f / 3.0f, 0.1f, 1000.f);
+    float f = 1.0f/float(tan(phiInDegree / 2.0f * (M_PI / 180.0f)));
+
+    float fMatrix [16] = {
+        f/aspectRatio,    0,                   0,                   0,
+              0,          f,                   0,                   0,
+              0,          0,     (near + far) / (near - far),      -1,
+              0,          0,   2.0f * near * far / (near - far),    0
+    };
+
+    fm = glm::make_mat4(fMatrix);
 
     // ====================================================================
     // End Exercise code
@@ -156,7 +165,7 @@ void resizeCallback( int newWidth, int newHeight )
     // Add your code here:
     // ====================================================================
 
-    g_ProjectionMatrix = buildFrustum(1,1,1,1);
+    g_ProjectionMatrix = buildFrustum(90.0f, 4.0f / 3.0f, 0.1f, 1000.f);
 
     // ====================================================================
     // End Exercise code
