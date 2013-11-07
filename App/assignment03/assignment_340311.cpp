@@ -9,10 +9,10 @@ using namespace std;
 // add your team members names and matrikel numbers here:
 void printStudents()
 {
-	cout << "Student Name 0, matrikel number 0" << endl;
-	cout << "Student Name 1, matrikel number 1" << endl;
-	cout << "Student Name 2, matrikel number 2" << endl;
-	cout << "Student Name 3, matrikel number 3" << endl;
+    cout << "Student Tarasenko Petro, matrikel number 340826" << endl;
+    cout << "Student Oleksandr Sabov, matrikel number 340311" << endl;
+    cout << "Student Chih-Yun Tsai, matrikel number 328782" << endl;
+    cout << "Student Sam Nikobonyadrad, matrikel number 340820" << endl;
 }
 
 //debug func
@@ -20,15 +20,16 @@ std::ostream &operator<< (std::ostream &out, const glm::vec3 &vec) {
     out << "{" 
         << vec.x << " " << vec.y << " "<< vec.z 
         << "}";
-
     return out;
 }
 
+//vector normalization
 glm::vec3 normalize (glm::vec3 vec) {
     float length = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
     return glm::vec3(vec.x/length, vec.y/length, vec.z/length);
 }
 
+//vectors cross product
 glm::vec3 cross (glm::vec3 b, glm::vec3 c) {
     return glm::vec3(b.y * c.z - b.z * c.y,
                      b.z * c.x - b.x * c.z,
@@ -69,14 +70,14 @@ void drawGrandstand( const glm::mat4 &model, const glm::mat4 &view, const glm::m
 }
 
 glm::mat4 getRotationMatrixZAxis( float angle ) {
-	glm::mat4 r;
-	r[0][0] =  cos(angle);
-	r[1][0] = -sin(angle);
-	r[0][1] =  sin(angle);
-	r[1][1] =  cos(angle);
+    glm::mat4 r;
+    r[0][0] =  cos(angle);
+    r[1][0] = -sin(angle);
+    r[0][1] =  sin(angle);
+    r[1][1] =  cos(angle);
     r[2][2] = 1.0;
     r[3][3] = 1.0;
-	return r;
+    return r;
 }
 
 glm::mat4 getRotationMatrixYAxis( float angle ) {
@@ -165,7 +166,7 @@ void resizeCallback( int newWidth, int newHeight )
     // Add your code here:
     // ====================================================================
 
-    g_ProjectionMatrix = buildFrustum(90.0f, 4.0f / 3.0f, 0.1f, 1000.f);
+    g_ProjectionMatrix = buildFrustum(90.0f, newWidth / newHeight, 0.1f, 1000.f);
 
     // ====================================================================
     // End Exercise code
@@ -293,7 +294,7 @@ void drawScene(int scene, float runTime) {
 
     float angle1 = -2.0f*M_PI*runTime/60.0f;
 
-	if (scene != 4) {
+    if (scene != 4) {
 
         // =====================================================
         // static camera for programming exercise part c:
@@ -301,19 +302,19 @@ void drawScene(int scene, float runTime) {
         // =====================================================
 
         glm::vec3 pos = glm::vec3(0, -1, 1);
-        g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
+        g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, cross(cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
         // =====================================================
         // End Exercise code
         // =====================================================
 
-	} else {
+    } else {
 
         // rotate around track for the other parts, looking at the center:
         glm::vec3 pos = glm::vec3(1.5f*sin(runTime), 1.5f*cos(runTime), 1.0f );
         g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
-	}
+    }
 
     if (scene == 5) {
 
@@ -325,15 +326,15 @@ void drawScene(int scene, float runTime) {
         // =====================================================
 
         glm::vec3 pos = glm::vec3(0.85 * cos(angle1), 0.85 * sin(angle1), height);
-        glm::vec3 pos1 = glm::vec3(0.85 * cos(angle1 - 0.1), 0.85 * sin(angle1 - 0.1), height);
-        g_ViewMatrix = lookAt( pos, pos1, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
+        glm::vec3 direction = glm::vec3(0.85 * cos(angle1 - 0.1), 0.85 * sin(angle1 - 0.1), height);
+        g_ViewMatrix = lookAt( pos, direction, cross(cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
         // =====================================================
         // End Exercise code
         // =====================================================
     }
 
-	
+    
     // Draw Track (Border and inner track marks)
     drawTrack();
 
@@ -346,113 +347,113 @@ void drawScene(int scene, float runTime) {
 
     drawCar( angle1, 1, glm::vec3(0,1,0) );
 
-	float angle2 = 0.5 * -2.0f*M_PI*runTime/60.0f;
-	drawCar( angle2, 2, glm::vec3(1,1,0) );
+    float angle2 = 0.5 * -2.0f*M_PI*runTime/60.0f;
+    drawCar( angle2, 2, glm::vec3(1,1,0) );
 
-	if (scene == 3) {
-		// optional bonus fun :-D
+    if (scene == 3) {
+        // optional bonus fun :-D
 
-		// state:
-		static float carPosition = 0.0f;
-		static float lastRunTime = runTime;
-		static float carSpeed = 0.0f;
-		static int   carLane = 1;
-		
-		static float spectatorPos   = 0.9f;
-		static bool  spectatorAlive = true;
-		static float spectatorDirection = -1.0f;
-		
-		float timeDiff = runTime - lastRunTime;
-		
-		// car control:
-		if (arrowKeyUpPressed)   carSpeed +=      timeDiff;
-		if (arrowKeyDownPressed) carSpeed -= 2.0f*timeDiff;
-		carSpeed = glm::clamp( carSpeed, 0.0f, 1.0f );
-		
-		if (arrowKeyRightPressed) carLane = 2;
-		if (arrowKeyLeftPressed)  carLane = 1;
-		
-		carPosition += -2.0f * M_PI * timeDiff*0.5 * carSpeed;
-		if (carPosition < -2.0 * M_PI) carPosition += 2.0 * M_PI;
-		
-		// car rendering:
-		drawCar( carPosition, carLane, glm::vec3(1,0,0) );
-		
-		// car crash detection:
-		float distToCar;
-		float crashPos;
-		if (carLane == 1) {
+        // state:
+        static float carPosition = 0.0f;
+        static float lastRunTime = runTime;
+        static float carSpeed = 0.0f;
+        static int   carLane = 1;
+        
+        static float spectatorPos   = 0.9f;
+        static bool  spectatorAlive = true;
+        static float spectatorDirection = -1.0f;
+        
+        float timeDiff = runTime - lastRunTime;
+        
+        // car control:
+        if (arrowKeyUpPressed)   carSpeed +=      timeDiff;
+        if (arrowKeyDownPressed) carSpeed -= 2.0f*timeDiff;
+        carSpeed = glm::clamp( carSpeed, 0.0f, 1.0f );
+        
+        if (arrowKeyRightPressed) carLane = 2;
+        if (arrowKeyLeftPressed)  carLane = 1;
+        
+        carPosition += -2.0f * M_PI * timeDiff*0.5 * carSpeed;
+        if (carPosition < -2.0 * M_PI) carPosition += 2.0 * M_PI;
+        
+        // car rendering:
+        drawCar( carPosition, carLane, glm::vec3(1,0,0) );
+        
+        // car crash detection:
+        float distToCar;
+        float crashPos;
+        if (carLane == 1) {
             distToCar = abs( carPosition - angle1);
             crashPos  = 0.5*(carPosition + angle1);
-		} else {
-			distToCar = abs( carPosition - angle2);
-			crashPos  = 0.5*(carPosition + angle2);
-		}
-		if (distToCar < 0.24f) {
-			// crash!
-			carSpeed = 0.0f;
-			
-			// Start with identity
-			glm::mat4 crash;
+        } else {
+            distToCar = abs( carPosition - angle2);
+            crashPos  = 0.5*(carPosition + angle2);
+        }
+        if (distToCar < 0.24f) {
+            // crash!
+            carSpeed = 0.0f;
+            
+            // Start with identity
+            glm::mat4 crash;
 
-			// Scale second car to fit onto track
-			crash[0][0] *= 0.02 + 0.5 * (0.24f-distToCar);
-			crash[1][1] *= 0.02 + 0.5 * (0.24f-distToCar);
+            // Scale second car to fit onto track
+            crash[0][0] *= 0.02 + 0.5 * (0.24f-distToCar);
+            crash[1][1] *= 0.02 + 0.5 * (0.24f-distToCar);
             crash[2][2] *= 0.02 + 0.5 * (0.24f-distToCar);
 
-			if (carLane == 1) {
-				crash[3][0] = -0.85;
-			} else {
-				crash[3][0] = -0.75;
-			}
+            if (carLane == 1) {
+                crash[3][0] = -0.85;
+            } else {
+                crash[3][0] = -0.75;
+            }
             glm::mat4 rotation = getRotationMatrixZAxis( crashPos );
-			rotation *= crash;
+            rotation *= crash;
 
             drawCircle( glm::vec3(0.8,0.8,0.8), rotation , g_ViewMatrix, g_ProjectionMatrix);
         }
-		
-		float spectatorSize = 0.025;
-		float distToSpectator = abs( carPosition );
-		if (distToSpectator < 0.12f) {
-			if ((carLane == 1) && (abs(spectatorPos+0.85)<0.75*spectatorSize) ) {
-				spectatorAlive = false;
-			}
-			if ((carLane == 2) && (abs(spectatorPos+0.75)<0.75*spectatorSize) ){
-				spectatorAlive = false;
-			}
-		}
+        
+        float spectatorSize = 0.025;
+        float distToSpectator = abs( carPosition );
+        if (distToSpectator < 0.12f) {
+            if ((carLane == 1) && (abs(spectatorPos+0.85)<0.75*spectatorSize) ) {
+                spectatorAlive = false;
+            }
+            if ((carLane == 2) && (abs(spectatorPos+0.75)<0.75*spectatorSize) ){
+                spectatorAlive = false;
+            }
+        }
 
 
         glm::mat4 transformSpectator;
 
-		// spectator rendering:
-		glm::vec3 spectatorColor = glm::vec3(0.8,0.2,1.0);
-		if (spectatorAlive) {
-			spectatorPos += 0.03f*timeDiff*spectatorDirection;
-			if (spectatorPos <= -0.9f) {
-				spectatorPos = -0.9f;
-				spectatorDirection = 1.0f;
-			}
-			if (spectatorPos >= -0.7f) {
-				spectatorPos = -0.7f;
-				spectatorDirection = -1.0f;
-			}           
+        // spectator rendering:
+        glm::vec3 spectatorColor = glm::vec3(0.8,0.2,1.0);
+        if (spectatorAlive) {
+            spectatorPos += 0.03f*timeDiff*spectatorDirection;
+            if (spectatorPos <= -0.9f) {
+                spectatorPos = -0.9f;
+                spectatorDirection = 1.0f;
+            }
+            if (spectatorPos >= -0.7f) {
+                spectatorPos = -0.7f;
+                spectatorDirection = -1.0f;
+            }           
             transformSpectator[2][2] = 0.06;
-		} else {
-			spectatorColor = glm::vec3(0.8,0.0,0.0);
-			spectatorSize  *= 2.0f;
+        } else {
+            spectatorColor = glm::vec3(0.8,0.0,0.0);
+            spectatorSize  *= 2.0f;
             transformSpectator[2][2] = 0.005;
-		}
-		
+        }
+        
 
-		transformSpectator[0][0] = spectatorSize;
-		transformSpectator[1][1] = spectatorSize;
-		transformSpectator[3][0] = spectatorPos;
-		
+        transformSpectator[0][0] = spectatorSize;
+        transformSpectator[1][1] = spectatorSize;
+        transformSpectator[3][0] = spectatorPos;
+        
         drawCircle( spectatorColor, transformSpectator , g_ViewMatrix, g_ProjectionMatrix);
-		
-		lastRunTime = runTime;
-	}
+        
+        lastRunTime = runTime;
+    }
 }
 
 void initCustomResources()
