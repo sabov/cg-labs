@@ -24,6 +24,17 @@ std::ostream &operator<< (std::ostream &out, const glm::vec3 &vec) {
     return out;
 }
 
+glm::vec3 normalize (glm::vec3 vec) {
+    float length = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+    return glm::vec3(vec.x/length, vec.y/length, vec.z/length);
+}
+
+glm::vec3 cross (glm::vec3 b, glm::vec3 c) {
+    return glm::vec3(b.y * c.z - b.z * c.y,
+                     b.z * c.x - b.x * c.z,
+                     b.x * c.y - b.y * c.x);
+}
+
 
 glm::mat4 g_ViewMatrix;
 glm::mat4 g_ProjectionMatrix;
@@ -106,41 +117,30 @@ glm::mat4 lookAt(const glm::vec3 &camPos, const glm::vec3 &viewDirection, const 
     // Add your code here:
     // ====================================================================
 
-    glm::vec3 r = glm::normalize(glm::cross(up, viewDirection));
-    glm::vec3 u = glm::normalize(up);
-    glm::vec3 d = glm::normalize(viewDirection);
+    glm::vec3 u = normalize(up);
+    glm::vec3 d = normalize(viewDirection - camPos);
+    glm::vec3 r = normalize(cross(d, u));
+    u = normalize(cross(r, d));
 
     float oMatrix [16] = {
-         r.x,  r.y,  r.z, 0,
-         u.x,  u.y,  u.z, 0,
-        -d.x, -d.y, -d.z, 0,
-        0, 0, 0, 1
+        r.x, u.x, -d.x, 0,
+        r.y, u.y, -d.y, 0,
+        r.z, u.z, -d.z, 0,
+         0,   0,    0,  1
     };
-    //float oMatrix [16] = {
-        //r.x, u.y, -d.z, 0,
-        //r.y, u.y, -d.y, 0,
-        //r.z, u.z, -d.z, 0,
-        //0, 0, 0, 1
-    //};
     glm::mat4 orientation = glm::make_mat4(oMatrix);
 
-    //float tMatrix [16] = {
-          //1,      0,      0,     camPos.x,
-          //0,      1,      0,     camPos.y,
-          //0,      0,      1,     -camPos.z,
-          //0,      0,      0,        1
-    //};
     float tMatrix [16] = {
-          1,      0,      0,     0,
-          0,      1,      0,     0,
-          0,      0,      1,     0,
-          camPos.x,      camPos.y,      -camPos.z,        1
+          1,          0,           0,      0,
+          0,          1,           0,      0,
+          0,          0,           1,      0,
+     -camPos.x,   -camPos.y,   -camPos.z,  1
     };
 
     glm::mat4 translation = glm::make_mat4(tMatrix);
 
     // Combine the orientation and translation to compute the view matrix
-    return glm::translate(orientation, glm::vec3(camPos.x, camPos.y, -camPos.z));
+    return orientation * translation;
 
     // ====================================================================
     // End Exercise code
@@ -292,7 +292,7 @@ void drawScene(int scene, float runTime) {
         // =====================================================
 
         glm::vec3 pos = glm::vec3(0, -1, 1);
-        g_ViewMatrix = glm::lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
+        g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
         // =====================================================
         // End Exercise code
@@ -302,7 +302,7 @@ void drawScene(int scene, float runTime) {
 
         // rotate around track for the other parts, looking at the center:
         glm::vec3 pos = glm::vec3(1.5f*sin(runTime), 1.5f*cos(runTime), 1.0f );
-        g_ViewMatrix = glm::lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
+        g_ViewMatrix = lookAt( pos, glm::vec3(0,0,0)-pos, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
 	}
 
@@ -317,7 +317,7 @@ void drawScene(int scene, float runTime) {
 
         glm::vec3 pos = glm::vec3(0.85 * cos(angle1), 0.85 * sin(angle1), height);
         glm::vec3 pos1 = glm::vec3(0.85 * cos(angle1 - 0.1), 0.85 * sin(angle1 - 0.1), height);
-        g_ViewMatrix = glm::lookAt( pos, pos1, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
+        g_ViewMatrix = lookAt( pos, pos1, glm::cross(glm::cross(glm::vec3(0,0,0)-pos,glm::vec3(0,0,1)),glm::vec3(0,0,0)-pos) );
 
         // =====================================================
         // End Exercise code
