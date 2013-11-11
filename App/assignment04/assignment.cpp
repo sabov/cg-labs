@@ -31,6 +31,28 @@ void printStudents()
 	cout << "Student Name 3, matrikel number 3" << endl;
 }
 
+//debug func for vec4
+std::ostream &operator<< (std::ostream &out, const glm::vec4 &vec) {
+    out << glm::to_string(vec) << endl;
+    return out;
+}
+
+//debug func for vec3
+std::ostream &operator<< (std::ostream &out, const glm::vec3 &vec) {
+    out << "{" 
+        << vec.x << " " << vec.y << " "<< vec.z 
+        << "}" << endl;
+    return out;
+}
+
+//debug func for vec2
+std::ostream &operator<< (std::ostream &out, const glm::vec2 &vec) {
+    out << "{" 
+        << vec.x << " " << vec.y
+        << "}" << endl;
+    return out;
+}
+
 // Implicit edge representation for one triangle edge.
 // p1 and p2 define the edge.
 // Evaluate the function at point.
@@ -44,6 +66,12 @@ int evaluateF(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& point)
     // Add your code here:
     // ====================================================================
 
+    cout << "point 1" << endl;
+    cout << p1;
+    cout << "point 2" << endl;
+    cout << p2;
+    cout << "point 3" << endl;
+    cout << point;
 
     // ====================================================================
     // End Exercise code
@@ -55,6 +83,11 @@ int evaluateF(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& point)
 // the input points are given in counterclockwise order
 void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::vec4& p2_in, const glm::vec3& normal) {
 
+    cout << p0_in;
+    cout << p1_in;
+    cout << p2_in;
+    cout << normal;
+
     // We use a hardcoded color
     const glm::vec3 color = glm::vec3(0.6,0.6,0.6);
 
@@ -63,11 +96,20 @@ void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::ve
     const glm::vec2 v1 = glm::vec2(p1_in[0],p1_in[1]);
     const glm::vec2 v2 = glm::vec2(p2_in[0],p2_in[1]);
 
+    cout << "----   2D   -----" << endl;
+    cout << v0;
+    cout << v1;
+    cout << v2;
+
     // rasterizer initialized from minX to maxX and minY to MaxY
     int minX = 0;
     int minY = 0;
     int maxX = g_windowWidth;
     int maxY = g_windowHeight;
+
+    cout << "----   Params   -----" << endl;
+    cout << maxX << endl;
+    cout << maxY << endl;
 
     // Diffuse lighting coefficient
     float diffuse = 1.0;
@@ -77,6 +119,16 @@ void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::ve
     // Assignment section b
     // Add your code here:
     // ====================================================================
+
+    minX = min(min(v0.x, v1.x), v2.x);
+    maxX = max(max(v0.x, v1.x), v2.x);
+    minY = min(min(v0.y, v1.y), v2.y);
+    maxY = max(max(v0.y, v1.y), v2.y);
+    cout << "New values" << endl;
+    cout << minX << endl;
+    cout << maxX << endl;
+    cout << minY << endl;
+    cout << maxY << endl;
 
     // ====================================================================
     // End Exercise code
