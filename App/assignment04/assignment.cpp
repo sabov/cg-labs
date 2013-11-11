@@ -66,12 +66,7 @@ int evaluateF(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& point)
     // Add your code here:
     // ====================================================================
 
-    cout << "point 1" << endl;
-    cout << p1;
-    cout << "point 2" << endl;
-    cout << p2;
-    cout << "point 3" << endl;
-    cout << point;
+    return (point.x - p1.x) * (p2.y - p1.y) - (point.y - p1.y) * (p2.x- p1.x);
 
     // ====================================================================
     // End Exercise code
@@ -158,10 +153,17 @@ void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::ve
             // Add your code here:
             // ====================================================================
 
-		// Use this function to draw the pixel
-		// Do not modify it, just call it if you want to draw the pixel given by p
+            // Use this function to draw the pixel
+            // Do not modify it, just call it if you want to draw the pixel given by p
+            glm::vec2 point = glm::vec2(p[0], p[1]);
+            if(evaluateF(v0, v1, point) < 0 &&
+                evaluateF(v1, v2, point) < 0 &&
+                evaluateF(v0, v2, point) < 0) {
+                cout << "==================" << endl;
+                cout << point;
+                cout << "==================" << endl;
                 setPixel(p[0],p[1],  diffuse * color );
-
+            }
 
             // ====================================================================
             // End Exercise code
