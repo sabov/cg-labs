@@ -25,10 +25,10 @@ using namespace std;
 // add your team members names and matrikel numbers here:
 void printStudents()
 {
-	cout << "Student Name 0, matrikel number 0" << endl;
-	cout << "Student Name 1, matrikel number 1" << endl;
-	cout << "Student Name 2, matrikel number 2" << endl;
-	cout << "Student Name 3, matrikel number 3" << endl;
+    cout << "Student Name 0, matrikel number 0" << endl;
+    cout << "Student Name 1, matrikel number 1" << endl;
+    cout << "Student Name 2, matrikel number 2" << endl;
+    cout << "Student Name 3, matrikel number 3" << endl;
 }
 
 //debug func for vec4
@@ -66,7 +66,7 @@ int evaluateF(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& point)
     // Add your code here:
     // ====================================================================
 
-    return (point.x - p1.x) * (p2.y - p1.y) - (point.y - p1.y) * (p2.x- p1.x);
+    return (point.x - p1.x) * (p2.y - p1.y) - (point.y - p1.y) * (p2.x - p1.x);
 
     // ====================================================================
     // End Exercise code
@@ -78,11 +78,6 @@ int evaluateF(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& point)
 // the input points are given in counterclockwise order
 void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::vec4& p2_in, const glm::vec3& normal) {
 
-    cout << p0_in;
-    cout << p1_in;
-    cout << p2_in;
-    cout << normal;
-
     // We use a hardcoded color
     const glm::vec3 color = glm::vec3(0.6,0.6,0.6);
 
@@ -91,10 +86,6 @@ void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::ve
     const glm::vec2 v1 = glm::vec2(p1_in[0],p1_in[1]);
     const glm::vec2 v2 = glm::vec2(p2_in[0],p2_in[1]);
 
-    cout << "----   2D   -----" << endl;
-    cout << v0;
-    cout << v1;
-    cout << v2;
 
     // rasterizer initialized from minX to maxX and minY to MaxY
     int minX = 0;
@@ -102,9 +93,6 @@ void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::ve
     int maxX = g_windowWidth;
     int maxY = g_windowHeight;
 
-    cout << "----   Params   -----" << endl;
-    cout << maxX << endl;
-    cout << maxY << endl;
 
     // Diffuse lighting coefficient
     float diffuse = 1.0;
@@ -115,15 +103,33 @@ void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::ve
     // Add your code here:
     // ====================================================================
 
-    minX = min(min(v0.x, v1.x), v2.x);
-    maxX = max(max(v0.x, v1.x), v2.x);
-    minY = min(min(v0.y, v1.y), v2.y);
-    maxY = max(max(v0.y, v1.y), v2.y);
-    cout << "New values" << endl;
+    minX = floor(min(min(v0.x, v1.x), v2.x));
+    maxX = ceil(max(max(v0.x, v1.x), v2.x));
+    minY = floor(min(min(v0.y, v1.y), v2.y));
+    maxY = ceil(max(max(v0.y, v1.y), v2.y));
+
+
+    minX = max(minX, 0);
+    maxX = min(maxX, g_windowWidth);
+    minY = max(minY, 0);
+    maxY = min(maxY, g_windowHeight);
+
+    /*
     cout << minX << endl;
-    cout << maxX << endl;
     cout << minY << endl;
+    cout << maxX << endl;
     cout << maxY << endl;
+    cout << "==========" << endl;
+    cout << "==========" << endl;
+    cout << "point" << endl;
+    cout << v0;
+    cout << v1;
+    cout << v2;
+    cout << "- - - - - -" << endl;
+    cout << min(v0.x, v1.x) << endl;
+    cout << min(min(v0.x, v1.x), v2.x) << endl;
+    cout << "==========" << endl;
+    */
 
     // ====================================================================
     // End Exercise code
@@ -156,12 +162,9 @@ void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::ve
             // Use this function to draw the pixel
             // Do not modify it, just call it if you want to draw the pixel given by p
             glm::vec2 point = glm::vec2(p[0], p[1]);
-            if(evaluateF(v0, v1, point) < 0 &&
-                evaluateF(v1, v2, point) < 0 &&
-                evaluateF(v0, v2, point) < 0) {
-                cout << "==================" << endl;
-                cout << point;
-                cout << "==================" << endl;
+            if(evaluateF(v0, v1, point) <= 0 &&
+                evaluateF(v1, v2, point) <= 0 &&
+                evaluateF(v2, v0, point) <= 0) {
                 setPixel(p[0],p[1],  diffuse * color );
             }
 
@@ -236,7 +239,7 @@ void drawScene(int _scene, float _runTime) {
     glm::mat4 transformation = g_ProjectionMatrix * g_ModelViewMatrix;
 
     // Iterate over all triangles in the bunny
-    for ( int i = 0; i < g_numberOfBunnyVertices ; i += 3 ) {
+    for ( int i = 0; i < g_numberOfBunnyVertices; i += 3 ) {
 
         // Get points and normals from bunny data array:
         glm::vec4 p1 = glm::vec4(g_bunnyMesh[ (i + 0) * g_bunnyStrideSize + 0],
