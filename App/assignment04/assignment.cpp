@@ -143,6 +143,14 @@ void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::ve
     // Add your code here:
     // ====================================================================
 
+    glm::vec3 viewDir = glm::vec3(0,0,1);
+    float normalDirection = glm::dot(viewDir, normal);
+    if(normalDirection <= 0) {
+        return;
+    } else {
+        diffuse = normalDirection;
+    }
+
     // ====================================================================
     // End Exercise code
     // ====================================================================
@@ -202,6 +210,13 @@ void drawScene(int _scene, float _runTime) {
     // Add your code here:
     // ====================================================================
 
+    glm::vec2 p;
+    for (p[1] = 0; p[1] < g_windowHeight; p[1]++) {
+        for (p[0] = 0; p[0] < g_windowWidth; p[0]++) {
+            setPixel(p[0],p[1], glm::vec3(0,0,0));
+        }
+    }
+
     // ====================================================================
     // End Exercise code
     // ====================================================================
@@ -221,7 +236,7 @@ void drawScene(int _scene, float _runTime) {
 	// one vertex consists of 9 floats:
     g_bunnyStrideSize = 9;
 
-    if ( (_scene == 2) || (_scene == 3) ) {
+    if ((_scene == 2) || (_scene == 3)) {
 
         // =========================================================================
         // Let the bunny rotate around y-Axis
@@ -229,6 +244,7 @@ void drawScene(int _scene, float _runTime) {
         // Add your code here:
         // ====================================================================
 
+        g_ModelViewMatrix *= glm::rotate(_runTime * 20, glm::vec3(0,1,0));
 
         // ====================================================================
         // End Exercise code
