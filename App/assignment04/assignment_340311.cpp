@@ -25,10 +25,9 @@ using namespace std;
 // add your team members names and matrikel numbers here:
 void printStudents()
 {
-    cout << "Student Name 0, matrikel number 0" << endl;
-    cout << "Student Name 1, matrikel number 1" << endl;
-    cout << "Student Name 2, matrikel number 2" << endl;
-    cout << "Student Name 3, matrikel number 3" << endl;
+    cout << "Student Tarasenko Petro, matrikel number 340826" << endl;
+    cout << "Student Oleksandr Sabov, matrikel number 340311" << endl;
+    cout << "Student Chih-Yun Tsai, matrikel number 328782" << endl;
 }
 
 //debug func for vec4
@@ -113,23 +112,6 @@ void drawTriangle( const glm::vec4& p0_in, const glm::vec4& p1_in, const glm::ve
     maxX = min(maxX, g_windowWidth);
     minY = max(minY, 0);
     maxY = min(maxY, g_windowHeight);
-
-    /*
-    cout << minX << endl;
-    cout << minY << endl;
-    cout << maxX << endl;
-    cout << maxY << endl;
-    cout << "==========" << endl;
-    cout << "==========" << endl;
-    cout << "point" << endl;
-    cout << v0;
-    cout << v1;
-    cout << v2;
-    cout << "- - - - - -" << endl;
-    cout << min(v0.x, v1.x) << endl;
-    cout << min(min(v0.x, v1.x), v2.x) << endl;
-    cout << "==========" << endl;
-    */
 
     // ====================================================================
     // End Exercise code
