@@ -123,20 +123,6 @@ void createShaderProgram( GLuint &vs, GLuint &fs, GLuint &prog, const std::strin
     const char *vsrc = vsFile.c_str();
     const char *fsrc = fsFile.c_str();
 
-    const GLchar* vertexSource =
-    "#version 150 core\n"
-    "in vec2 position;"
-    "void main() {"
-    "   gl_Position = vec4(position, 0.0, 1.0);"
-    "}";
-const GLchar* fragmentSource =
-    "#version 150 core\n"
-    "out vec4 outColor;"
-    "void main() {"
-    "   outColor = vec4(1.0, 1.0, 1.0, 1.0);"
-    "}";
-
-
     vs = glCreateShader(GL_VERTEX_SHADER);
     fs = glCreateShader(GL_FRAGMENT_SHADER);
     prog = glCreateProgram();
@@ -149,26 +135,13 @@ const GLchar* fragmentSource =
     glAttachShader( prog, vs );
     glAttachShader( prog, fs );
 
-
-    //GLint posLoc  = glGetAttribLocation( prog, "aPosition" );
-    //GLint normLoc = glGetAttribLocation( prog, "aNormal" );
-    //GLint colLoc  = glGetAttribLocation( prog, "aColor" );
-    //glBindAttribLocation( prog, 0, "aPosition" );
-    //glBindAttribLocation( prog, 3, "aNormal" ); 
-    //glBindAttribLocation( prog, 1, "aColor" );
-    //glBind(GL_ARRAY_BUFFER, 0);
-
-    //GLint posAttrib = glGetAttribLocation(prog, "aPosition");
-
-
     glLinkProgram( prog );
+
     // the shaders are now ready to use:
     glUseProgram( prog );
 
     glEnableVertexAttribArray(0); // now were ready to draw
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, g_bunnyStrideSize, 0 );
-    GLint uniformLocation = glGetUniformLocation( prog, "uAlpha" );
-    glUniform1f( uniformLocation, 0.5f );
 
     // ====================================================================
     // End Exercise code
@@ -186,16 +159,7 @@ void initCustomResources()
     // Add your code here:
     // ====================================================================
 
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
 
-    GLfloat vertices[] = {
-        0.0f, 0.5f,
-        0.5f, -0.5f,
-        -0.5f, -0.5f
-    };
-    GLuint bunny_vbo;
     glGenBuffers( 1, &bunny_vbo );
     glBindBuffer( GL_ARRAY_BUFFER, bunny_vbo );
     glBufferData( GL_ARRAY_BUFFER, g_numberOfBunnyVertices * g_bunnyStrideSize, g_bunnyMesh,
@@ -220,6 +184,12 @@ void deleteCustomResources()
     // don't forget to delete your OpenGL ressources (shaders, buffers, etc.)!
     // Add your code here:
     // ====================================================================
+
+    glDeleteProgram(prog_a);
+    glDeleteShader(vs_a);
+    glDeleteShader(fs_a);
+
+    glDeleteBuffers(1, &bunny_vbo);
 
 
     // ====================================================================
