@@ -71,6 +71,7 @@ void drawScene(int scene, float runTime) {
         // Add your code here:
         // ====================================================================
 
+        glDrawArrays( GL_TRIANGLES, 0, g_numberOfBunnyVertices);
 
         // ====================================================================
         // End Exercise code
@@ -117,6 +118,57 @@ void createShaderProgram( GLuint &vs, GLuint &fs, GLuint &prog, const std::strin
     // Add your code here:
     // ====================================================================
 
+    std::string vsFile = getFileContent(vsFileName);
+    std::string fsFile = getFileContent(fsFileName);
+    const char *vsrc = vsFile.c_str();
+    const char *fsrc = fsFile.c_str();
+
+    const GLchar* vertexSource =
+    "#version 150 core\n"
+    "in vec2 position;"
+    "void main() {"
+    "   gl_Position = vec4(position, 0.0, 1.0);"
+    "}";
+const GLchar* fragmentSource =
+    "#version 150 core\n"
+    "out vec4 outColor;"
+    "void main() {"
+    "   outColor = vec4(1.0, 1.0, 1.0, 1.0);"
+    "}";
+
+
+    vs = glCreateShader(GL_VERTEX_SHADER);
+    fs = glCreateShader(GL_FRAGMENT_SHADER);
+    prog = glCreateProgram();
+
+    glShaderSource( vs, 1, &vsrc, NULL );
+    glCompileShader( vs );
+    glShaderSource( fs, 1, &fsrc, NULL );
+    glCompileShader( fs );
+
+    glAttachShader( prog, vs );
+    glAttachShader( prog, fs );
+
+
+    //GLint posLoc  = glGetAttribLocation( prog, "aPosition" );
+    //GLint normLoc = glGetAttribLocation( prog, "aNormal" );
+    //GLint colLoc  = glGetAttribLocation( prog, "aColor" );
+    //glBindAttribLocation( prog, 0, "aPosition" );
+    //glBindAttribLocation( prog, 3, "aNormal" ); 
+    //glBindAttribLocation( prog, 1, "aColor" );
+    //glBind(GL_ARRAY_BUFFER, 0);
+
+    //GLint posAttrib = glGetAttribLocation(prog, "aPosition");
+
+
+    glLinkProgram( prog );
+    // the shaders are now ready to use:
+    glUseProgram( prog );
+
+    glEnableVertexAttribArray(0); // now were ready to draw
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, g_bunnyStrideSize, 0 );
+    GLint uniformLocation = glGetUniformLocation( prog, "uAlpha" );
+    glUniform1f( uniformLocation, 0.5f );
 
     // ====================================================================
     // End Exercise code
@@ -134,16 +186,30 @@ void initCustomResources()
     // Add your code here:
     // ====================================================================
 
-	
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    GLfloat vertices[] = {
+        0.0f, 0.5f,
+        0.5f, -0.5f,
+        -0.5f, -0.5f
+    };
+    GLuint bunny_vbo;
+    glGenBuffers( 1, &bunny_vbo );
+    glBindBuffer( GL_ARRAY_BUFFER, bunny_vbo );
+    glBufferData( GL_ARRAY_BUFFER, g_numberOfBunnyVertices * g_bunnyStrideSize, g_bunnyMesh,
+        GL_STATIC_DRAW);
+
     // ====================================================================
     // End Exercise code
     // ====================================================================
 
 
-	// create the shaders:
-	createShaderProgram( vs_a, fs_a, prog_a, "shader_123456_a.vsh", "shader_123456_a.fsh" );
-	createShaderProgram( vs_b, fs_b, prog_b, "shader_123456_b.vsh", "shader_123456_b.fsh" );
-	createShaderProgram( vs_c, fs_c, prog_c, "shader_123456_c.vsh", "shader_123456_c.fsh" );
+    // create the shaders:
+    createShaderProgram( vs_a, fs_a, prog_a, "shader_340311_a.vsh", "shader_340311_a.fsh" );
+    //createShaderProgram( vs_b, fs_b, prog_b, "shader_340311_b.vsh", "shader_340311_b.fsh" );
+    //createShaderProgram( vs_c, fs_c, prog_c, "shader_340311_c.vsh", "shader_340311_c.fsh" );
 }
 
 void deleteCustomResources()
