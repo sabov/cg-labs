@@ -54,7 +54,9 @@ GLuint bunny_color_vbo;
 GLuint vs_a, fs_a, prog_a;
 GLuint vs_b, fs_b, prog_b;
 GLuint vs_c, fs_c, prog_c;
-
+GLuint uniColor;
+GLint uniProj;
+GLint uniModel;
 void drawScene(int scene, float runTime) {
 	
 	// glm::lookAt needs the eye position, the center to look at and the up vector, so it works a bit different 
@@ -71,6 +73,10 @@ void drawScene(int scene, float runTime) {
         // Add your code here:
         // ====================================================================
 
+        // the shaders are now ready to use:
+        glUseProgram( prog_a );
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, g_bunnyStrideSize, 0 );
+        glEnableVertexAttribArray(0); // now were ready to draw
         glDrawArrays( GL_TRIANGLES, 0, g_numberOfBunnyVertices);
 
         // ====================================================================
@@ -84,6 +90,24 @@ void drawScene(int scene, float runTime) {
         // Add your code here:
         // ====================================================================
 
+        glUseProgram( prog_b );
+        GLint posAttrib = glGetAttribLocation( prog_b, "aPosition" );
+        glEnableVertexAttribArray(posAttrib);
+        glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE,
+                               g_bunnyStrideSize, 0);
+
+        GLint colAttrib = glGetAttribLocation( prog_b, "aColor" );
+        glEnableVertexAttribArray(colAttrib);
+        glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,
+                               g_bunnyStrideSize, (void*)(4*sizeof(float)));
+
+        uniProj = glGetUniformLocation(prog_b, "proj");
+        uniModel = glGetUniformLocation(prog_b, "model");
+
+        glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(g_ProjectionMatrix));
+        glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(g_ModelViewMatrix));
+        glDrawArrays( GL_TRIANGLES, 0, g_numberOfBunnyVertices);
+
         // ====================================================================
         // End Exercise code
         // ====================================================================
@@ -96,6 +120,23 @@ void drawScene(int scene, float runTime) {
         // Add your code here:
         // ====================================================================
 
+        glUseProgram( prog_c );
+        GLint posAttrib = glGetAttribLocation( prog_c, "aPosition" );
+        glEnableVertexAttribArray(posAttrib);
+        glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE,
+                               g_bunnyStrideSize, 0);
+
+        GLint colAttrib = glGetAttribLocation( prog_c, "aColor" );
+        glEnableVertexAttribArray(colAttrib);
+        glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,
+                               g_bunnyStrideSize, (void*)(4*sizeof(float)));
+
+        uniProj = glGetUniformLocation(prog_c, "proj");
+        uniModel = glGetUniformLocation(prog_c, "model");
+
+        glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(g_ProjectionMatrix));
+        glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(g_ModelViewMatrix));
+        glDrawArrays( GL_TRIANGLES, 0, g_numberOfBunnyVertices);
 
         // ====================================================================
         // End Exercise code
@@ -137,11 +178,6 @@ void createShaderProgram( GLuint &vs, GLuint &fs, GLuint &prog, const std::strin
 
     glLinkProgram( prog );
 
-    // the shaders are now ready to use:
-    glUseProgram( prog );
-
-    glEnableVertexAttribArray(0); // now were ready to draw
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, g_bunnyStrideSize, 0 );
 
     // ====================================================================
     // End Exercise code
@@ -165,6 +201,11 @@ void initCustomResources()
     glBufferData( GL_ARRAY_BUFFER, g_numberOfBunnyVertices * g_bunnyStrideSize, g_bunnyMesh,
         GL_STATIC_DRAW);
 
+    //glGenBuffers( 1, &bunny_color_vbo);
+    //glBindBuffer( GL_ARRAY_BUFFER, bunny_color_vbo);
+    //glBufferData( GL_ARRAY_BUFFER, g_numberOfBunnyVertices * g_bunnyColorStrideSize, g_bunnyMesh,
+        //GL_STATIC_DRAW);
+
     // ====================================================================
     // End Exercise code
     // ====================================================================
@@ -172,8 +213,8 @@ void initCustomResources()
 
     // create the shaders:
     createShaderProgram( vs_a, fs_a, prog_a, "shader_340311_a.vsh", "shader_340311_a.fsh" );
-    //createShaderProgram( vs_b, fs_b, prog_b, "shader_340311_b.vsh", "shader_340311_b.fsh" );
-    //createShaderProgram( vs_c, fs_c, prog_c, "shader_340311_c.vsh", "shader_340311_c.fsh" );
+    createShaderProgram( vs_b, fs_b, prog_b, "shader_340311_b.vsh", "shader_340311_b.fsh" );
+    createShaderProgram( vs_c, fs_c, prog_c, "shader_340311_c.vsh", "shader_340311_c.fsh" );
 }
 
 void deleteCustomResources()
