@@ -14,10 +14,9 @@ extern unsigned char g_bunnyColor[];
 // add your team members names and matrikel numbers here:
 void printStudents()
 {
-	cout << "Student Name 0, matrikel number 0" << endl;
-	cout << "Student Name 1, matrikel number 1" << endl;
-	cout << "Student Name 2, matrikel number 2" << endl;
-	cout << "Student Name 3, matrikel number 3" << endl;
+    cout << "Student Tarasenko Petro, matrikel number 340826" << endl;
+    cout << "Student Oleksandr Sabov, matrikel number 340311" << endl;
+    cout << "Student Chih-Yun Tsai, matrikel number 328782" << endl;
 }
 
 glm::mat4 g_ModelViewMatrix;
