@@ -75,6 +75,7 @@ void drawScene(int scene, float runTime) {
 
         // the shaders are now ready to use:
         glUseProgram( prog_a );
+        glBindBuffer( GL_ARRAY_BUFFER, bunny_vbo );
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, g_bunnyStrideSize, 0 );
         glEnableVertexAttribArray(0); // now were ready to draw
         glDrawArrays( GL_TRIANGLES, 0, g_numberOfBunnyVertices);
@@ -91,6 +92,7 @@ void drawScene(int scene, float runTime) {
         // ====================================================================
 
         glUseProgram( prog_b );
+        glBindBuffer( GL_ARRAY_BUFFER, bunny_vbo );
         GLint posAttrib = glGetAttribLocation( prog_b, "aPosition" );
         glEnableVertexAttribArray(posAttrib);
         glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE,
@@ -121,15 +123,17 @@ void drawScene(int scene, float runTime) {
         // ====================================================================
 
         glUseProgram( prog_c );
+        glBindBuffer( GL_ARRAY_BUFFER, bunny_vbo );
         GLint posAttrib = glGetAttribLocation( prog_c, "aPosition" );
         glEnableVertexAttribArray(posAttrib);
         glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE,
                                g_bunnyStrideSize, 0);
 
+        glBindBuffer( GL_ARRAY_BUFFER, bunny_color_vbo);
         GLint colAttrib = glGetAttribLocation( prog_c, "aColor" );
         glEnableVertexAttribArray(colAttrib);
-        glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,
-                               g_bunnyStrideSize, (void*)(4*sizeof(float)));
+        glVertexAttribPointer(colAttrib, 3, GL_UNSIGNED_BYTE, GL_TRUE,
+                               g_bunnyColorStrideSize, 0);
 
         uniProj = glGetUniformLocation(prog_c, "proj");
         uniModel = glGetUniformLocation(prog_c, "model");
@@ -201,10 +205,10 @@ void initCustomResources()
     glBufferData( GL_ARRAY_BUFFER, g_numberOfBunnyVertices * g_bunnyStrideSize, g_bunnyMesh,
         GL_STATIC_DRAW);
 
-    //glGenBuffers( 1, &bunny_color_vbo);
-    //glBindBuffer( GL_ARRAY_BUFFER, bunny_color_vbo);
-    //glBufferData( GL_ARRAY_BUFFER, g_numberOfBunnyVertices * g_bunnyColorStrideSize, g_bunnyMesh,
-        //GL_STATIC_DRAW);
+    glGenBuffers( 1, &bunny_color_vbo);
+    glBindBuffer( GL_ARRAY_BUFFER, bunny_color_vbo);
+    glBufferData( GL_ARRAY_BUFFER, g_numberOfBunnyVertices * g_bunnyColorStrideSize, g_bunnyColor,
+        GL_STATIC_DRAW);
 
     // ====================================================================
     // End Exercise code
@@ -227,10 +231,17 @@ void deleteCustomResources()
     // ====================================================================
 
     glDeleteProgram(prog_a);
+    glDeleteProgram(prog_b);
+    glDeleteProgram(prog_c);
     glDeleteShader(vs_a);
     glDeleteShader(fs_a);
+    glDeleteShader(vs_b);
+    glDeleteShader(fs_b);
+    glDeleteShader(vs_c);
+    glDeleteShader(fs_c);
 
     glDeleteBuffers(1, &bunny_vbo);
+    glDeleteBuffers(1, &bunny_color_vbo);
 
 
     // ====================================================================
