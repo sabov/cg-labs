@@ -64,9 +64,9 @@ void initCustomResources() {
     // create your ressources here, e.g. shaders, buffers,...
 
     // create the shaders:
-    createShaderProgram(vs_a, fs_a, prog_a, "shader_123456_a.vsh", "shader_123456_a.fsh");
-    createShaderProgram(vs_b, fs_b, prog_b, "shader_123456_b.vsh", "shader_123456_b.fsh");
-    createShaderProgram(vs_c, fs_c, prog_c, "shader_123456_c.vsh", "shader_123456_c.fsh");
+    createShaderProgram(vs_a, fs_a, prog_a, "shader_340311_a.vsh", "shader_340311_a.fsh");
+    createShaderProgram(vs_b, fs_b, prog_b, "shader_340311_b.vsh", "shader_340311_b.fsh");
+    createShaderProgram(vs_c, fs_c, prog_c, "shader_340311_c.vsh", "shader_340311_c.fsh");
 }
 
 void deleteCustomResources() {

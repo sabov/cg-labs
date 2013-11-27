@@ -17,5 +17,7 @@ uniform float uSpecularityExponent;
 out vec3 vColor;
 
 void main() {
-    
+    gl_Position = aPosition;
+    vColor = aNormal;
+    gl_Position = uProjectionMatrix * uModelViewMatrix * aPosition;
 }
