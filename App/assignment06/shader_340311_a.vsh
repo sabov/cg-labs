@@ -19,16 +19,22 @@ out vec3 vColor;
 void main() {
     gl_Position = uProjectionMatrix * uModelViewMatrix * aPosition;
 
-    vec3 l = normalize(uLightPosition);
-    vec3 n = normalize(aNormal);
-    vec3 v = normalize(vec3(0,0,0));
-    vec3 h = normalize(l+v);
+    mat4 Mmv = uModelViewMatrix;
+    vec3 p = vec3(Mmv * aPosition);
+    vec3 v = vec3(0, 0, 0);
+    vec3 n = vec3(inverse(transpose(Mmv)) * vec4(aNormal, 0));
+    vec3 wl = normalize(uLightPosition - p);
+    vec3 wv = normalize(v - p);
+    vec3 h = normalize(wl + wv);
 
-    float diffuse = max(dot(l,n), 0);
-    float specular = pow(max(0.0,dot(n,h)),4);
+    float diffuse = dot(n, wl);
+    float specular = pow(max(0, dot(n, h)), 0.5);
 
     vColor = vec3(uAmbientMaterial +
                         uDiffuseMaterial *  diffuse +
-                        uSpecularMaterial * specular * uSpecularityExponent);
+                        uSpecularMaterial * specular);
+
+
+
 
 }
