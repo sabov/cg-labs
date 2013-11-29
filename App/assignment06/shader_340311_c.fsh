@@ -23,9 +23,9 @@ void main() {
     vec3 p = vec3(Mmv * vPosition);
     vec3 v = vec3(0, 0, 0);
 
-    vec3 global = vec3(0, -3, -5);
+    vec3 global = vec3(vec4(0,0,0,0) * Mmv);
 
-    vec3 n = vec3(inverse(transpose(Mmv)) * vec4(vNormal, 0));
+    vec3 n = normalize(vec3(inverse(transpose(Mmv)) * vec4(vNormal, 0)));
     vec3 wl = normalize(uLightPosition - p);
 
     vec3 r = 2 * n * n * (uLightPosition - p) - (uLightPosition - p);

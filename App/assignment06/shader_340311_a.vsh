@@ -24,13 +24,13 @@ void main() {
     vec3 p = vec3(Mmv * aPosition);
     vec3 v = vec3(0, 0, 0);
 
-    vec3 n = vec3(inverse(transpose(Mmv)) * vec4(aNormal, 0.0f));
+    vec3 n = normalize(vec3(inverse(transpose(Mmv)) * vec4(aNormal, 0.0f)));
     vec3 wl = normalize(uLightPosition - p);
     vec3 wv = normalize(v - p);
     vec3 h = normalize(wl + wv);
 
     float diffuse = max(0.0f, dot(n, wl));
-    float specular = pow(max(0.0f, dot(h, n)), 2);
+    float specular = pow(max(0.0f, dot(h, n)), uSpecularityExponent);
 
     vColor = vec3(uAmbientMaterial * uLightColor +
                         uDiffuseMaterial * uLightColor * diffuse +
