@@ -39,7 +39,6 @@ GLuint vboKonus;
 GLuint vaoA, vaoB, vaoC;
 
 
-
 // add your team members names and matrikel numbers here:
 void printStudents() {
     cout << "Student Name 0, matrikel number 0" << endl;
@@ -71,10 +70,13 @@ void drawScene(int scene, float runTime) {
       // Scene A
       // ====================================================================
 
-      //glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ProjectionMatrix));
-      //glUniformMatrix4fv(modelViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ModelViewMatrix));
+	  glUseProgram(prog_a);
+	  GLint projectionMatrixLocation = glGetUniformLocation( prog_a, "projectionMatrix" );
+      GLint modelViewMatrixLocation = glGetUniformLocation( prog_a, "modelViewMatrix" );
+      glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ProjectionMatrix));
+      glUniformMatrix4fv(modelViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ModelViewMatrix));
       glBindVertexArray(vaoA);
-      glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs * 3);
+      glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs*3);
 
       // ====================================================================
       // End Exercise code
@@ -88,10 +90,16 @@ void drawScene(int scene, float runTime) {
       // Scene B
       // ====================================================================
 
-      //glUseProgram(prog_b);
-      //GLint projectionMatrixLocation = glGetUniformLocation( prog_b, "projectionMatrix" );
-      //GLint modelViewMatrixLocation  = glGetUniformLocation( prog_b, "modelViewMatrix" );
-      //GLint timeLocation             = glGetUniformLocation( prog_b, "time" );
+      glUseProgram(prog_b);
+      GLint projectionMatrixLocation = glGetUniformLocation( prog_b, "projectionMatrix" );
+      GLint modelViewMatrixLocation  = glGetUniformLocation( prog_b, "modelViewMatrix" );
+      GLint timeLocation             = glGetUniformLocation( prog_b, "time" );
+	  glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ProjectionMatrix));
+      glUniformMatrix4fv(modelViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ModelViewMatrix));
+	  glUniform1f(timeLocation, runTime);
+      glBindVertexArray(vaoB);
+	  glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs * 3);
+		cout << runTime << endl;
 
 
 
@@ -160,10 +168,10 @@ void initCustomResources() {
     glBufferData( GL_ARRAY_BUFFER, sizeof(float)*trianglesInVBOs*3*3, // 3 vertices per triangle, 3 floats per vertex
                   spherePosition, GL_STATIC_DRAW );
 
-    //glGenBuffers( 1, &vboSphereNormalColor);
-    //glBindBuffer( GL_ARRAY_BUFFER, vboSphereNormalColor );
-    //glBufferData( GL_ARRAY_BUFFER, sizeof(float)*trianglesInVBOs*3*6, // 3 vertices per triangle, 6 floats per vertex
-                 //sphereNormalColor, GL_STATIC_DRAW );
+    glGenBuffers( 1, &vboSphereNormalColor);
+    glBindBuffer( GL_ARRAY_BUFFER, vboSphereNormalColor );
+    glBufferData( GL_ARRAY_BUFFER, sizeof(float)*trianglesInVBOs*3*6, // 3 vertices per triangle, 6 floats per vertex
+                 sphereNormalColor, GL_STATIC_DRAW );
 
     //glGenBuffers( 1, &vboKonus );
     //glBindBuffer( GL_ARRAY_BUFFER, vboKonus );
@@ -181,19 +189,12 @@ void initCustomResources() {
     glGenVertexArrays(1, &vaoA);
     glBindVertexArray(vaoA);
 
-    glUseProgram(prog_a);
-    GLint projectionMatrixLocation = glGetUniformLocation( prog_a, "projectionMatrix" );
-    GLint modelViewMatrixLocation  = glGetUniformLocation( prog_a, "modelViewMatrix" );
-    glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ProjectionMatrix));
-    glUniformMatrix4fv(modelViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ModelViewMatrix));
-
     glBindBuffer( GL_ARRAY_BUFFER, vboSpherePos );
-    GLint posAttrib = glGetAttribLocation( prog_a, "position" );
-    glEnableVertexAttribArray(posAttrib);
+    GLint posAttrib_a = glGetAttribLocation( prog_a, "position" );
+    glEnableVertexAttribArray(posAttrib_a);
+    glVertexAttribPointer(posAttrib_a, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
 
-    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
-
-    glBindVertexArray(0);
+	glBindVertexArray(0);
 
 
 
@@ -203,11 +204,22 @@ void initCustomResources() {
     // Scene B
     // ====================================================================
 
-        //glGenVertexArrays(1, &vaoB);
-        //glBindVertexArray(vaoB);
-        //glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs);
+     glGenVertexArrays(1, &vaoB);
+     glBindVertexArray(vaoB);
 
+     glBindBuffer( GL_ARRAY_BUFFER, vboSpherePos );
+     GLint posAttrib_b = glGetAttribLocation( prog_b, "position" );
+     glEnableVertexAttribArray(posAttrib_b);
+     glVertexAttribPointer(posAttrib_b, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
 
+	 glBindBuffer( GL_ARRAY_BUFFER, vboSphereNormalColor );
+     GLint colAttrib_b = glGetAttribLocation( prog_b, "color" );
+     glEnableVertexAttribArray(colAttrib_b);
+     glVertexAttribPointer(colAttrib_b, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+
+     glBindVertexArray(0);
+	 
+	 
     // ====================================================================
     // Add your code here:
     // Generate VertexArrayObjects for the scenes
