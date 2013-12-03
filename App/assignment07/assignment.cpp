@@ -71,25 +71,25 @@ void drawScene(int scene, float runTime) {
       // ====================================================================
       
       glUseProgram(prog_a);
-	  GLint projectionMatrixLocation = glGetUniformLocation( prog_a, "projectionMatrix" );
+      GLint projectionMatrixLocation = glGetUniformLocation( prog_a, "projectionMatrix" );
       GLint modelViewMatrixLocation  = glGetUniformLocation( prog_a, "modelViewMatrix" );
 
-	  
+      
 
-	  glBindBuffer( GL_ARRAY_BUFFER, vboSpherePos );	
-	  GLint posAttrib = glGetAttribLocation( prog_a, "position" );
+      glBindBuffer( GL_ARRAY_BUFFER, vboSpherePos );	
+      GLint posAttrib = glGetAttribLocation( prog_a, "position" );
       glEnableVertexAttribArray(posAttrib);
 
-	  glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), 0);
+      glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), 0);
 
 
-	  glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ProjectionMatrix));
+      glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ProjectionMatrix));
       glUniformMatrix4fv(modelViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ModelViewMatrix));
 
-	  glBindVertexArray(vaoA);
-	  glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs);
+      glBindVertexArray(vaoA);
+      glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs);
       
-	
+    
 
       // ====================================================================
       // End Exercise code
@@ -193,10 +193,10 @@ void initCustomResources() {
     // Scene A
     // ====================================================================
 
-		
-		glGenVertexArrays(1, &vaoA);
-		glBindVertexArray(vaoA);
-	    //glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs);
+        
+        glGenVertexArrays(1, &vaoA);
+        glBindVertexArray(vaoA);
+        //glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs);
 
 
 
@@ -206,9 +206,9 @@ void initCustomResources() {
     // Scene B
     // ====================================================================
 
-		glGenVertexArrays(1, &vaoB);
-		glBindVertexArray(vaoB);
-		//glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs);
+        glGenVertexArrays(1, &vaoB);
+        glBindVertexArray(vaoB);
+        //glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs);
 
 
     // ====================================================================
@@ -218,9 +218,9 @@ void initCustomResources() {
     // ====================================================================
 
 
-		glGenVertexArrays(1, &vaoC);
-		glBindVertexArray(vaoC);
-		//glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs);
+        glGenVertexArrays(1, &vaoC);
+        glBindVertexArray(vaoC);
+        //glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs);
 
 
     // ====================================================================
