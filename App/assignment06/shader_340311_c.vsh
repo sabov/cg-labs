@@ -10,5 +10,8 @@ out vec4 vPosition;
 out vec3 vNormal;
 
 void main() {
+    gl_Position = uProjectionMatrix * uModelViewMatrix * aPosition;
+    vPosition = aPosition;
+    vNormal = aNormal;
 
 }
