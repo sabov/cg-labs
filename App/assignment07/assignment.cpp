@@ -99,9 +99,7 @@ void drawScene(int scene, float runTime) {
 	  glUniform1f(timeLocation, runTime);
       glBindVertexArray(vaoB);
 	  glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs * 3);
-		cout << runTime << endl;
-
-
+		
 
       // ====================================================================
       // End Exercise code
@@ -119,6 +117,11 @@ void drawScene(int scene, float runTime) {
       GLint projectionMatrixLocation = glGetUniformLocation( prog_c, "projectionMatrix" );
       GLint modelViewMatrixLocation  = glGetUniformLocation( prog_c, "modelViewMatrix" );
       GLint timeLocation             = glGetUniformLocation( prog_c, "time" );
+      glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ProjectionMatrix));
+      glUniformMatrix4fv(modelViewMatrixLocation, 1, GL_FALSE, glm::value_ptr(g_ModelViewMatrix));
+	  glUniform1f(timeLocation, runTime);
+	  glBindVertexArray(vaoC);
+	  glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs * 3);
 
 
       // ====================================================================
@@ -173,10 +176,10 @@ void initCustomResources() {
     glBufferData( GL_ARRAY_BUFFER, sizeof(float)*trianglesInVBOs*3*6, // 3 vertices per triangle, 6 floats per vertex
                  sphereNormalColor, GL_STATIC_DRAW );
 
-    //glGenBuffers( 1, &vboKonus );
-    //glBindBuffer( GL_ARRAY_BUFFER, vboKonus );
-    //glBufferData( GL_ARRAY_BUFFER, sizeof(float)*trianglesInVBOs*3*9, // 3 vertices per triangle, 9 floats per vertex
-                 //konus, GL_STATIC_DRAW );
+    glGenBuffers( 1, &vboKonus );
+    glBindBuffer( GL_ARRAY_BUFFER, vboKonus );
+    glBufferData( GL_ARRAY_BUFFER, sizeof(float)*trianglesInVBOs*3*9, // 3 vertices per triangle, 9 floats per vertex
+                 konus, GL_STATIC_DRAW );
 
 
     
@@ -227,11 +230,33 @@ void initCustomResources() {
     // ====================================================================
 
 
-        //glGenVertexArrays(1, &vaoC);
-        //glBindVertexArray(vaoC);
-        //glDrawArrays( GL_TRIANGLES, 0, trianglesInVBOs);
+     glGenVertexArrays(1, &vaoC);
+     glBindVertexArray(vaoC);
+
+	 glBindBuffer( GL_ARRAY_BUFFER, vboSpherePos );
+     GLint posAttrib_cs = glGetAttribLocation( prog_c, "positionS" );
+     glEnableVertexAttribArray(posAttrib_cs);
+     glVertexAttribPointer(posAttrib_cs, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
+
+	 glBindBuffer( GL_ARRAY_BUFFER, vboSphereNormalColor );
+     GLint colAttrib_cs = glGetAttribLocation( prog_c, "colorS" );
+     glEnableVertexAttribArray(colAttrib_cs);
+     glVertexAttribPointer(colAttrib_cs, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+
+	 glBindBuffer( GL_ARRAY_BUFFER, vboKonus );
+     GLint posAttrib_ck = glGetAttribLocation( prog_c, "positionK" );
+     glEnableVertexAttribArray(posAttrib_ck);
+     glVertexAttribPointer(posAttrib_ck, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), 0);
+
+	 glBindBuffer( GL_ARRAY_BUFFER, vboKonus );
+     GLint colAttrib_ck = glGetAttribLocation( prog_c, "colorK" );
+     glEnableVertexAttribArray(colAttrib_ck);
+     glVertexAttribPointer(colAttrib_ck, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(6*sizeof(float)));
+
+     glBindVertexArray(0);
 
 
+	
     // ====================================================================
     // End Exercise code
     // ====================================================================
@@ -251,5 +276,12 @@ void deleteCustomResources() {
     glDeleteProgram(prog_a);
     glDeleteProgram(prog_b);
     glDeleteProgram(prog_c);
+
+	glDeleteBuffers(1, &vboSpherePos);
+	glDeleteBuffers(1, &vboSphereNormalColor);
+	glDeleteBuffers(1, &vboKonus);
+	glDeleteBuffers(1, &vaoA);
+	glDeleteBuffers(1, &vaoB);
+	glDeleteBuffers(1, &vaoC);
 }
 
