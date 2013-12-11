@@ -16,6 +16,7 @@ VertexArrayObject* g_vaoKilleroo;
 ArrayBuffer*       g_abKilleroo;
 
 GLuint textureA;
+GLuint textureB;
 
 ShaderProgram* shaderA; // you might need more than one program
 
@@ -56,6 +57,11 @@ void drawScene(int scene, float runTime) {
 		// use a sRGB texture for the diffuse and ambient material.
 		// make sure the framebuffer is set to convert the linear content to sRGB!
 		// the specular material should be white (set as a constant in the fragment shader:
+	glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureB);
+	glEnable(GL_FRAMEBUFFER_SRGB);
+	g_vaoKilleroo->render();
+	  
 		
 	} else if (scene == 3) {
 		// use a sRGB texture for the diffuse and ambient material.
@@ -102,7 +108,14 @@ void initCustomResources() {
     img->getFormat(), img->getType(), img->getData());
     glGenerateMipmap( GL_TEXTURE_2D );
 
-	glEnable(GL_DEPTH_TEST);
+    glActiveTexture( GL_TEXTURE0 );
+    glGenTextures(1, &textureB);
+    glBindTexture( GL_TEXTURE_2D, textureB);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_SRGB8 , img->getWidth(), img->getHeight(), 0,
+    img->getFormat(), img->getType(), img->getData());
+    glGenerateMipmap( GL_TEXTURE_2D );
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void deleteCustomResources() {
@@ -111,6 +124,6 @@ void deleteCustomResources() {
 
     delete shaderA;
     delete g_vaoKilleroo;
-    delete g_abKilleroo;
+    delete g_abKilleroo;   
 }
 
