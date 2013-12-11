@@ -4,7 +4,9 @@
 // now in eye-space
 in vec4 vPosition;
 in vec3 vNormal;
+in vec2 vTexCoord;
 
+uniform sampler2D uTexKiller;
 uniform mat4 uModelViewMatrix;
 uniform vec3 uLightPosition;
 uniform vec3 uLightColor;
@@ -15,7 +17,8 @@ out vec4 oFragColor;
 vec3 getDiffuseMaterial()
 {
 	// TODO: sample the diffuse material here:
-	return vec3(0.1,1.0,0.1);
+	//return vec3(0.1,1.0,0.1);
+    return vec3(texture(uTexKiller, vTexCoord));
 }
 
 /*

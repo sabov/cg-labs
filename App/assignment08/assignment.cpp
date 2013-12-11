@@ -15,6 +15,8 @@ extern glm::mat4 g_ProjectionMatrix;
 VertexArrayObject* g_vaoKilleroo;
 ArrayBuffer*       g_abKilleroo;
 
+GLuint textureA;
+
 ShaderProgram* shaderA; // you might need more than one program
 
 // add your team members names and matrikel numbers here:
@@ -42,6 +44,9 @@ void drawScene(int scene, float runTime) {
     	shaderA->setUniform("uModelViewMatrix",           modelViewMatrix);
     	shaderA->setUniform("uInvTranspModelViewMatrix",  invTranspModelView);
 		shaderA->setUniform("uLightPosition",             glm::vec3( modelViewMatrix*vLightPosition) );
+        shaderA->setUniform("uTexKiller", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureA);
     
 		// todo: texturing
 		g_vaoKilleroo->render();
@@ -86,7 +91,17 @@ void initCustomResources() {
 
     ////////////////////////////////////////////////////////////////////////////
     // Read textures:
-	
+    PNGReader* reader = new PNGReader();;
+    TextureData* img = reader->readPNGFile("killerooDiffuse.png");
+
+
+     glActiveTexture( GL_TEXTURE0 );
+    glGenTextures(1, &textureA);
+    glBindTexture( GL_TEXTURE_2D, textureA);
+    glTexImage2D( GL_TEXTURE_2D, 0, img->getFormat(), img->getWidth(), img->getHeight(), 0,
+    img->getFormat(), img->getType(), img->getData());
+    glGenerateMipmap( GL_TEXTURE_2D );
+
 	glEnable(GL_DEPTH_TEST);
 }
 
