@@ -17,8 +17,10 @@ ArrayBuffer*       g_abKilleroo;
 
 GLuint killerooDiffuseTex;
 GLuint killerooSpecularTex;
+GLuint textureB;
 
 ShaderProgram* shaderA; // you might need more than one program
+ShaderProgram* shaderB; // you might need more than one program
 ShaderProgram* shaderC; // you might need more than one program
 
 // add your team members names and matrikel numbers here:
@@ -49,6 +51,7 @@ void drawScene(int scene, float runTime) {
         shaderA->setUniform("uTexKiller", 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, killerooDiffuseTex);
+        glDisable(GL_FRAMEBUFFER_SRGB);
     
 		// todo: texturing
 		g_vaoKilleroo->render();
@@ -58,6 +61,21 @@ void drawScene(int scene, float runTime) {
 		// use a sRGB texture for the diffuse and ambient material.
 		// make sure the framebuffer is set to convert the linear content to sRGB!
 		// the specular material should be white (set as a constant in the fragment shader:
+		glm::mat4 modelViewMatrix    = viewMatrix * modelMatrix;
+    	glm::mat4 invTranspModelView = glm::inverse(glm::transpose(modelViewMatrix));
+
+		shaderB->use();
+		shaderB->setUniform("uProjectionMatrix",          g_ProjectionMatrix );
+    	shaderB->setUniform("uModelViewMatrix",           modelViewMatrix);
+    	shaderB->setUniform("uInvTranspModelViewMatrix",  invTranspModelView);
+		shaderB->setUniform("uLightPosition",             glm::vec3( modelViewMatrix*vLightPosition) );
+        shaderB->setUniform("uTexKiller", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureB);
+        glEnable(GL_FRAMEBUFFER_SRGB);
+
+        g_vaoKilleroo->render();
+	  
 		
 	} else if (scene == 3) {
 		// use a sRGB texture for the diffuse and ambient material.
@@ -79,6 +97,7 @@ void drawScene(int scene, float runTime) {
         glBindTexture( GL_TEXTURE_2D, killerooDiffuseTex);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture( GL_TEXTURE_2D, killerooSpecularTex);
+        glDisable(GL_FRAMEBUFFER_SRGB);
 
 
         g_vaoKilleroo->render();
@@ -97,6 +116,9 @@ void initCustomResources() {
     shaderA = new ShaderProgram("partA_123456.vsh", "partA_123456.fsh");
     if (!shaderA->link()) exit(0);
 
+    shaderB = new ShaderProgram("partA_123456.vsh", "partA_123456.fsh");
+    if (!shaderA->link()) exit(0);
+
     shaderC = new ShaderProgram("partC_340311.vsh", "partC_340311.fsh");
     if (!shaderA->link()) exit(0);
 
@@ -104,6 +126,10 @@ void initCustomResources() {
     shaderA->use();
     shaderA->setUniform( "uLightColor",             vLightColor);
     shaderA->setUniform( "uSpecularityExponent",    fSpecularityExponent);
+
+    shaderB->use();
+    shaderB->setUniform( "uLightColor",             vLightColor);
+    shaderB->setUniform( "uSpecularityExponent",    fSpecularityExponent);
 
     shaderC->use();
     shaderC->setUniform( "uLightColor",             vLightColor);
@@ -139,7 +165,15 @@ void initCustomResources() {
     killerooSpecularImg->getFormat(), killerooSpecularImg->getType(), killerooSpecularImg->getData());
     glGenerateMipmap( GL_TEXTURE_2D );
 
-	glEnable(GL_DEPTH_TEST);
+    //partB
+    glActiveTexture( GL_TEXTURE0 );
+    glGenTextures(1, &textureB);
+    glBindTexture( GL_TEXTURE_2D, textureB);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_SRGB8 , killerooDiffuseImg->getWidth(), killerooDiffuseImg->getHeight(), 0,
+    killerooDiffuseImg->getFormat(), killerooDiffuseImg->getType(), killerooDiffuseImg->getData());
+    glGenerateMipmap( GL_TEXTURE_2D );
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void deleteCustomResources() {
@@ -148,6 +182,6 @@ void deleteCustomResources() {
 
     delete shaderA;
     delete g_vaoKilleroo;
-    delete g_abKilleroo;
+    delete g_abKilleroo;   
 }
 
