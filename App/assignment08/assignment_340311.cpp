@@ -94,9 +94,9 @@ void drawScene(int scene, float runTime) {
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture( GL_TEXTURE_2D, textureB);
+        glEnable(GL_FRAMEBUFFER_SRGB);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture( GL_TEXTURE_2D, killerooSpecularTex);
-        glEnable(GL_FRAMEBUFFER_SRGB);
 
         g_vaoKilleroo->render();
 
@@ -111,10 +111,10 @@ void initCustomResources() {
     ////////////////////////////////////////////////////////////////////////////
     // Shader:
     
-    shaderA = new ShaderProgram("partA_123456.vsh", "partA_123456.fsh");
+    shaderA = new ShaderProgram("partA_340311.vsh", "partA_340311.fsh");
     if (!shaderA->link()) exit(0);
 
-    shaderB = new ShaderProgram("partA_123456.vsh", "partA_123456.fsh");
+    shaderB = new ShaderProgram("partA_340311.vsh", "partA_340311.fsh");
     if (!shaderA->link()) exit(0);
 
     shaderC = new ShaderProgram("partC_340311.vsh", "partC_340311.fsh");
