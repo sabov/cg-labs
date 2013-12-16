@@ -45,8 +45,8 @@ void drawScene(bool environmentOnly, int meshNumber, bool cubeMapping, bool debu
    //
    // Set additional uniforms with
    //  g_shader->setUniform("name", <value> );
-   //	
-	
+   //
+
    // =======================================================================
    // =======================================================================
    // Assignment code:
@@ -55,10 +55,13 @@ void drawScene(bool environmentOnly, int meshNumber, bool cubeMapping, bool debu
    // =======================================================================
 
     if (debugTexture) {
-    	// bind debug spheremap and cubemap here
-		
+        // bind debug spheremap and cubemap here
+        //g_shader->setUniform("uUseCubeMapping", true );
+        //g_shader->setUniform("uEnvironmentOnly", true );
     } else {
-    	// bind spheremap and cubemap here
+        // bind spheremap and cubemap here
+        //glActiveTexture( GL_TEXTURE0 );
+        //glBindTexture(GL_TEXTURE_2D, sphereMapTexture);
     }
 
     // =======================================================================
@@ -69,7 +72,7 @@ void drawScene(bool environmentOnly, int meshNumber, bool cubeMapping, bool debu
     // render the correct mesh:
     if (meshNumber == 0) {
 		glActiveTexture( GL_TEXTURE0 );
-		glBindTexture(GL_TEXTURE_2D, earthTexture);
+		glBindTexture(GL_TEXTURE_2D, sphereMapTexture);
 		g_vaoEarth->render();
 	} else {
 		glActiveTexture( GL_TEXTURE0 );
@@ -94,8 +97,8 @@ GLuint readTexture2D( const string &fileName ) {
     // texture->getType()    <- data type, e.g. GL_UNSIGNED_BYTE
     // texture->getData()    <- a pointer to the data
     //
-	
-	texture = pngreader.readFile( fileName );
+    
+    texture = pngreader.readFile( fileName );
     glGenTextures(1, &gltexture);
     glBindTexture(GL_TEXTURE_2D, gltexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -111,10 +114,10 @@ GLuint readTexture2D( const string &fileName ) {
         texture->getFormat(),
         texture->getType(),
         texture->getData() );
-    
+
     glGenerateMipmap(GL_TEXTURE_2D);
     delete texture; // Not needed anymore!
-    
+
     return gltexture;
 }
 

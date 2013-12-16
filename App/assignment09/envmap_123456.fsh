@@ -34,6 +34,7 @@ uniform bool uEnvironmentOnly;
 
 out vec4 oFragColor;
 
+vec2 texCoord;
 /*
  * Lighting model: Phong/Blinn lighting per vertex
  * Shading Model: Average of colors of incident vertices per triangle
@@ -41,12 +42,12 @@ out vec4 oFragColor;
  */
 vec3 ambient() {
 
-	vec3 texColor = texture(uMaterialDiffuse, vTexCoord).rgb;
+	vec3 texColor = texture(uMaterialDiffuse, texCoord).rgb;
     return uLightColor * texColor * 0.02; //  to damp the ambient color
 }
 
 vec3 diffuse() {
-	vec3 texColor = texture(uMaterialDiffuse, vTexCoord).rgb;
+	vec3 texColor = texture(uMaterialDiffuse, texCoord).rgb;
 
     vec3 lp = normalize(uLightPosition - vec3(vEyePosition));
     vec3 n = normalize(vNormal);
@@ -69,6 +70,10 @@ void main() {
    vec3 cameraDir = normalize( vWorldPosition - uCameraPosition );
    vec3 reflectionVector = normalize( reflect( cameraDir, normalInWorldSpace ) );
    
+   vec3 r = reflectionVector;
+   float m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1.0)*(r.z+1.0) );
+    texCoord.s = r.x/m + 0.5;
+    texCoord.t = r.y/m + 0.5;
    vec3 reflectionColor = vec3(0.0);
 
    vec3 lighingTerm = ambient() + diffuse() + specular();
@@ -81,6 +86,7 @@ void main() {
 
    if (uUseCubeMapping) {
    } else {
+
    }
 
    if (uEnvironmentOnly) {
