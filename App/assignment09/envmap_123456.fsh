@@ -28,13 +28,14 @@ uniform bool uEnvironmentOnly;
 // =======================================================================
 // =======================================================================
 
+vec2 texCoord;
+
 // =======================================================================
 // End assignment code
 // =======================================================================
 
 out vec4 oFragColor;
 
-vec2 texCoord;
 /*
  * Lighting model: Phong/Blinn lighting per vertex
  * Shading Model: Average of colors of incident vertices per triangle
@@ -42,12 +43,12 @@ vec2 texCoord;
  */
 vec3 ambient() {
 
-	vec3 texColor = texture(uMaterialDiffuse, texCoord).rgb;
+    vec3 texColor = texture(uMaterialDiffuse, vTexCoord).rgb;
     return uLightColor * texColor * 0.02; //  to damp the ambient color
 }
 
 vec3 diffuse() {
-	vec3 texColor = texture(uMaterialDiffuse, texCoord).rgb;
+	vec3 texColor = texture(uMaterialDiffuse, vTexCoord).rgb;
 
     vec3 lp = normalize(uLightPosition - vec3(vEyePosition));
     vec3 n = normalize(vNormal);
@@ -60,40 +61,43 @@ vec3 specular() {
 
     float cosAngle = max(dot(bisector, normalize(vNormal)), 0);
 
-	float specularMaterial = 0.5;
+    float specularMaterial = 0.5;
     return specularMaterial * uLightColor * pow(cosAngle, uSpecularityExponent);
 }
 
 void main() {
-    
+
    vec3 normalInWorldSpace = normalize( vWorldNormal );
    vec3 cameraDir = normalize( vWorldPosition - uCameraPosition );
    vec3 reflectionVector = normalize( reflect( cameraDir, normalInWorldSpace ) );
-   
-   vec3 r = reflectionVector;
-   float m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1.0)*(r.z+1.0) );
-    texCoord.s = r.x/m + 0.5;
-    texCoord.t = r.y/m + 0.5;
-   vec3 reflectionColor = vec3(0.0);
 
+   vec3 reflectionColor = vec3(0.0);
    vec3 lighingTerm = ambient() + diffuse() + specular();
-      
+
    // =======================================================================
    // =======================================================================
    // Assignment code:
    // =======================================================================
    // =======================================================================
 
-   if (uUseCubeMapping) {
-   } else {
 
-   }
+    if (uUseCubeMapping) {
 
-   if (uEnvironmentOnly) {
-   } else {
+    } else {
+        vec3 r = reflectionVector;
+        float m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1.0)*(r.z+1.0) );
+        texCoord.s = r.x/m + 0.5;
+        texCoord.t = r.y/m + 0.5;
+        vec3 lighingTerm = texture(uMaterialDiffuse, texCoord).rgb;
+        vec3 fragColor = lighingTerm + 0.1 * reflectionColor;
+        oFragColor = vec4(fragColor, 1.0f);
+    }
+
+    if (uEnvironmentOnly) {
+    } else {
        vec3 fragColor = lighingTerm + 0.1 * reflectionColor;
        oFragColor = vec4(fragColor, 1.0f);
-   }
+    }
 
     // =======================================================================
     // End assignment code

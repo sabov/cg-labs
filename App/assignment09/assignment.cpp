@@ -56,12 +56,21 @@ void drawScene(bool environmentOnly, int meshNumber, bool cubeMapping, bool debu
 
     if (debugTexture) {
         // bind debug spheremap and cubemap here
-        //g_shader->setUniform("uUseCubeMapping", true );
-        //g_shader->setUniform("uEnvironmentOnly", true );
+
+        g_shader->setUniform("uUseCubeMapping", false );
+        g_shader->setUniform("uEnvironmentOnly", true );
+
+        glActiveTexture( GL_TEXTURE0 );
+        glBindTexture(GL_TEXTURE_2D, sphereMapTextureDebug);
+
     } else {
         // bind spheremap and cubemap here
-        //glActiveTexture( GL_TEXTURE0 );
-        //glBindTexture(GL_TEXTURE_2D, sphereMapTexture);
+
+        g_shader->setUniform("uUseCubeMapping", false );
+        g_shader->setUniform("uEnvironmentOnly", true);
+
+        glActiveTexture( GL_TEXTURE0 );
+        glBindTexture(GL_TEXTURE_2D, sphereMapTexture);
     }
 
     // =======================================================================
@@ -71,12 +80,12 @@ void drawScene(bool environmentOnly, int meshNumber, bool cubeMapping, bool debu
     
     // render the correct mesh:
     if (meshNumber == 0) {
-		glActiveTexture( GL_TEXTURE0 );
-		glBindTexture(GL_TEXTURE_2D, sphereMapTexture);
+		//glActiveTexture( GL_TEXTURE0 );
+		//glBindTexture(GL_TEXTURE_2D, sphereMapTexture);
 		g_vaoEarth->render();
 	} else {
-		glActiveTexture( GL_TEXTURE0 );
-		glBindTexture(GL_TEXTURE_2D, bunnyTexture);
+		//glActiveTexture( GL_TEXTURE0 );
+		//glBindTexture(GL_TEXTURE_2D, sphereMapTexture);
 		g_vaoBunny->render();
 	}
 }
