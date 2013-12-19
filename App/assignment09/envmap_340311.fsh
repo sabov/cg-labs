@@ -9,6 +9,9 @@ in vec2 vTexCoord;
 in vec3 vWorldNormal;
 
 uniform sampler2D uMaterialDiffuse;
+uniform sampler2D uTextureSphereMap;
+uniform sampler2D uTextureCubeMap;
+
 uniform mat4 uModelMatrix;
 
 uniform vec3 uLightPosition;
@@ -28,7 +31,6 @@ uniform bool uEnvironmentOnly;
 // =======================================================================
 // =======================================================================
 
-vec2 texCoord;
 
 // =======================================================================
 // End assignment code
@@ -64,6 +66,13 @@ vec3 specular() {
     float specularMaterial = 0.5;
     return specularMaterial * uLightColor * pow(cosAngle, uSpecularityExponent);
 }
+vec3 reflectionColor(vec3 r) {
+    vec2 texCoord;
+    float m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1.0)*(r.z+1.0) );
+    texCoord.s = r.x/m + 0.5;
+    texCoord.t = r.y/m + 0.5;
+    return texture(uTextureSphereMap, texCoord).rgb;
+}
 
 void main() {
 
@@ -82,18 +91,17 @@ void main() {
 
 
     if (uUseCubeMapping) {
-
+        vec2 texCoord;//cube map textore dosen't appear :(
+        texCoord.s = 0.5;//debug
+        texCoord.t = 0.5;
+        reflectionColor = texture(uTextureCubeMap, texCoord).rgb;
     } else {
-        vec3 r = reflectionVector;
-        float m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1.0)*(r.z+1.0) );
-        texCoord.s = r.x/m + 0.5;
-        texCoord.t = r.y/m + 0.5;
-        vec3 lighingTerm = texture(uMaterialDiffuse, texCoord).rgb;
-        vec3 fragColor = lighingTerm + 0.1 * reflectionColor;
-        oFragColor = vec4(fragColor, 1.0f);
+        reflectionColor = reflectionColor(reflectionVector);
     }
 
     if (uEnvironmentOnly) {
+       vec3 fragColor = reflectionColor;
+       oFragColor = vec4(fragColor, 1.0f);
     } else {
        vec3 fragColor = lighingTerm + 0.1 * reflectionColor;
        oFragColor = vec4(fragColor, 1.0f);
