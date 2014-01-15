@@ -150,6 +150,26 @@ void drawScene(int scene,double) {
                   // =======================================================================
         
 
+
+            glBeginQuery(GL_SAMPLES_PASSED, query[i]);
+
+                glColorMask(false, false, false, false);
+                glDepthMask(false);
+                g_bunnyVisibility[i] = false;
+                drawBoundingObject(i);
+
+            glEndQuery(GL_SAMPLES_PASSED);
+
+            glBeginConditionalRender(query[i], GL_QUERY_WAIT);
+
+                glColorMask(true, true, true, true);
+                glDepthMask(true);
+                drawBunny(i);
+
+            glEndConditionalRender();
+
+
+
                   // =======================================================================
                   // End assignment code
                   // =======================================================================
@@ -225,6 +245,15 @@ void drawScenePreview(int scene,double) {
                    //
                    // =======================================================================
                    // =======================================================================
+
+            glBeginConditionalRender(query[i], GL_QUERY_WAIT);
+
+                glColorMask(true, true, true, true);
+                glDepthMask(true);
+                drawBunny(i);
+
+            glEndConditionalRender();
+
 
 
            // =======================================================================
