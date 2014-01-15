@@ -127,7 +127,7 @@ void drawScene(int scene,double) {
                      // End assignment code
                      // =======================================================================
         }
- 
+
                 // =======================================================================
                 // End assignment code
                 // =======================================================================
@@ -192,6 +192,48 @@ void drawScene(int scene,double) {
                 // =======================================================================
 
 
+        if(performQuery) {
+            for (int i = 0; i < 16; i++) {
+ 
+                glBeginQuery(GL_SAMPLES_PASSED, query[i]);
+
+                glColorMask(false, false, false, false);
+                glDepthMask(false);
+                g_bunnyVisibility[i] = false;
+                drawBoundingObject(i);
+
+                glEndQuery(GL_SAMPLES_PASSED);
+            }
+
+            framesWaited = 0;
+            performQuery = false;
+        }
+
+
+        for (int i = 0; i < 16; i++) {
+            glGetQueryObjectuiv(query[i], GL_QUERY_RESULT_AVAILABLE, &queryResults[i]);
+            hasBeenTested = queryResults[i];
+        }
+
+        if(hasBeenTested) {
+            performQuery = true;
+            cout << framesWaited << endl;
+        } else {
+            framesWaited++;
+        }
+
+        for (int i = 0; i < 16; i++) {
+
+            if(hasBeenTested) glGetQueryObjectuiv(query[i], GL_QUERY_RESULT, &params[i]);
+
+            glColorMask(true, true, true, true);
+            glDepthMask(true);
+            if(params[i] > 0.0) {
+                drawBunny(i);
+            }
+        }
+
+
 
                 // =======================================================================
                 // End assignment code
@@ -220,14 +262,11 @@ void drawScenePreview(int scene,double) {
                        // =======================================================================
                        // =======================================================================
 
-
             if(g_bunnyVisibility[i]) {
                 drawBunny(i);
             } else {
                 drawBoundingObject(i);
             }
-
-
 
                         // =======================================================================
                         // End assignment code
@@ -254,9 +293,7 @@ void drawScenePreview(int scene,double) {
 
             glEndConditionalRender();
 
-
-
-           // =======================================================================
+                   // =======================================================================
                    // End assignment code
                    // =======================================================================
 
