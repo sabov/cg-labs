@@ -17,16 +17,19 @@ void printStudents() {
 
 //16 queries
 GLuint query[16];
+GLuint queryResults[16];
+GLuint params[16];
 
 // for part D
 bool performQuery = true;
+bool hasBeenTested = false;
 int  framesWaited = 0;
 
 void drawScene(int scene,double) {
-	static int lastScene = 0;
+    static int lastScene = 0;
 
-	if (scene == 1) {
-		for (int i = 0; i < 16; i++) {
+    if (scene == 1) {
+        for (int i = 0; i < 16; i++) {
                      // =======================================================================
                      // =======================================================================
                      // Assignment code:
@@ -40,20 +43,50 @@ void drawScene(int scene,double) {
                      // =======================================================================
 
 
+            glBeginQuery(GL_SAMPLES_PASSED, query[i]);
+
+                glColorMask(false, false, false, false);
+                glDepthMask(false);
+                g_bunnyVisibility[i] = false;
+                drawBoundingObject(i);
+
+            glEndQuery(GL_SAMPLES_PASSED);
+
+            do {
+                glGetQueryObjectuiv(query[i], GL_QUERY_RESULT_AVAILABLE, &queryResults[i]);
+            } while (!queryResults[i]);
+
+            glGetQueryObjectuiv(query[i], GL_QUERY_RESULT, &params[i]);
+
+
+
+            glBeginConditionalRender(query[i], GL_QUERY_WAIT);
+
+                glColorMask(true, true, true, true);
+                glDepthMask(true);
+                cout << params[i] << endl;
+                if(params[i] > 0.0) {
+                    g_bunnyVisibility[i] = true;
+                }
+                drawBunny(i);
+
+            glEndConditionalRender();
+
+
                      // =======================================================================
                      // End assignment code
                      // =======================================================================
-		}
-	} else if (scene == 2) {
+        }
+    } else if (scene == 2) {
                 // =======================================================================
                 // =======================================================================
                 // Assignment code:
                 // Part B:
                 //
-		// assume all bunnies to be visible in the first frame
-		// start 16 occlusion queries, render the bounding objects
-		// in case the bunny was not visible before and the bunny in case it was visible.
-		// one frame later evaluate the results.
+        // assume all bunnies to be visible in the first frame
+        // start 16 occlusion queries, render the bounding objects
+        // in case the bunny was not visible before and the bunny in case it was visible.
+        // one frame later evaluate the results.
                 //
                 // =======================================================================
                 // =======================================================================
@@ -62,10 +95,10 @@ void drawScene(int scene,double) {
                 // =======================================================================
                 // End assignment code
                 // =======================================================================
-			
-	} else if (scene == 3) {
-		
-		for (int i = 0; i < 16; i++) {
+            
+    } else if (scene == 3) {
+        
+        for (int i = 0; i < 16; i++) {
 
                   // =======================================================================
                   // =======================================================================
@@ -79,26 +112,26 @@ void drawScene(int scene,double) {
                   //
                   // =======================================================================
                   // =======================================================================
-		
+        
 
                   // =======================================================================
                   // End assignment code
                   // =======================================================================
 
-		}
-	} else {
-		// =======================================================================
+        }
+    } else {
+        // =======================================================================
                 // =======================================================================
                 // Assignment code:
                 // Part D:
-		// 
-		// render all bunnies each frame starting a query at the first frame and check if it is
-		// available each frame. if it is available, print the frames that have passed and
-		// start a new query in the next frame.
-		// 
-		// if a result would be available directly, the output would be 0,
-		// if it is available after one frame, it would be 1 etc.
-		// actual wait times are dependent on the GPU, OS and whether vsync is active.
+        // 
+        // render all bunnies each frame starting a query at the first frame and check if it is
+        // available each frame. if it is available, print the frames that have passed and
+        // start a new query in the next frame.
+        // 
+        // if a result would be available directly, the output would be 0,
+        // if it is available after one frame, it would be 1 etc.
+        // actual wait times are dependent on the GPU, OS and whether vsync is active.
                 // =======================================================================
                 // =======================================================================
 
@@ -107,9 +140,9 @@ void drawScene(int scene,double) {
                 // =======================================================================
                 // End assignment code
                 // =======================================================================	        
-	}
-	
-	lastScene = scene;
+    }
+    
+    lastScene = scene;
 }
 
 //
@@ -119,10 +152,9 @@ void drawScene(int scene,double) {
 // for part B we can use also conditional rendering with the same queries as in drawScene
 // for part D just draw all bunnies
 //
-void drawScenePreview(int scene,double)
-{
-	if (scene <= 2) {
-		for (int i = 0; i < 16; i++) {
+void drawScenePreview(int scene,double) {
+    if (scene <= 2) {
+        for (int i = 0; i < 16; i++) {
                        // =======================================================================
                        // =======================================================================
                        // Assignment code:
@@ -133,13 +165,21 @@ void drawScenePreview(int scene,double)
                        // =======================================================================
 
 
+            if(g_bunnyVisibility[i]) {
+                drawBunny(i);
+            } else {
+                drawBoundingObject(i);
+            }
+
+
+
                         // =======================================================================
                         // End assignment code
                         // =======================================================================
 
-		}		
-	} else if (scene == 3) {
-		for (int i = 0; i < 16; i++) {
+        }
+    } else if (scene == 3) {
+        for (int i = 0; i < 16; i++) {
                    // =======================================================================
                    // =======================================================================
                    // Assignment code:
@@ -151,20 +191,20 @@ void drawScenePreview(int scene,double)
                    // =======================================================================
 
 
-		   // =======================================================================
+           // =======================================================================
                    // End assignment code
                    // =======================================================================
 
-		}
-	} else {
-		for (int i = 0; i < 16; i++) {
-			drawBunny( i );
-		}
-	}
+        }
+    } else {
+        for (int i = 0; i < 16; i++) {
+            drawBunny( i );
+        }
+    }
 }
 
 void initCustomResources() {
-	// Create your resources here, e.g. shaders, buffers,...
+    // Create your resources here, e.g. shaders, buffers,...
     glGenQueries(16, query);
 }
 
