@@ -29,6 +29,7 @@ void drawScene(int scene,double) {
     static int lastScene = 0;
 
     if (scene == 1) {
+        for (int i = 0; i < 16; i++) {queryResults[i] = true;}
         for (int i = 0; i < 16; i++) {
                      // =======================================================================
                      // =======================================================================
@@ -58,19 +59,18 @@ void drawScene(int scene,double) {
 
             glGetQueryObjectuiv(query[i], GL_QUERY_RESULT, &params[i]);
 
-
-
-            glBeginConditionalRender(query[i], GL_QUERY_WAIT);
+            //glBeginConditionalRender(query[i], GL_QUERY_WAIT);
 
                 glColorMask(true, true, true, true);
                 glDepthMask(true);
-                cout << params[i] << endl;
                 if(params[i] > 0.0) {
                     g_bunnyVisibility[i] = true;
+                    drawBunny(i);
+                } else {
+                    drawBoundingObject(i);
                 }
-                drawBunny(i);
 
-            glEndConditionalRender();
+            //glEndConditionalRender();
 
 
                      // =======================================================================
@@ -91,6 +91,42 @@ void drawScene(int scene,double) {
                 // =======================================================================
                 // =======================================================================
 
+        bool firstFrame = true;
+        for (int i = 0; i < 16; i++) {
+        
+            glBeginQuery(GL_SAMPLES_PASSED, query[i]);
+
+            glColorMask(false, false, false, false);
+            glDepthMask(false);
+            g_bunnyVisibility[i] = false;
+            drawBoundingObject(i);
+
+            glEndQuery(GL_SAMPLES_PASSED);
+
+            if(firstFrame || queryResults[i]) {
+                if(firstFrame) {
+                    firstFrame = false;
+                } else {
+                    glGetQueryObjectuiv(query[i], GL_QUERY_RESULT, &params[i]);
+                }
+                glGetQueryObjectuiv(query[i], GL_QUERY_RESULT_AVAILABLE, &queryResults[i]);
+            }
+
+
+            glColorMask(true, true, true, true);
+            glDepthMask(true);
+            if(params[i] > 0.0) {
+                g_bunnyVisibility[i] = true;
+                drawBunny(i);
+            } else {
+                drawBoundingObject(i);
+            }
+
+
+                     // =======================================================================
+                     // End assignment code
+                     // =======================================================================
+        }
  
                 // =======================================================================
                 // End assignment code
