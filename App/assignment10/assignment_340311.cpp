@@ -29,7 +29,6 @@ void drawScene(int scene,double) {
     static int lastScene = 0;
 
     if (scene == 1) {
-        //for (int i = 0; i < 16; i++) {queryResults[i] = true;}
         for (int i = 0; i < 16; i++) {
                      // =======================================================================
                      // =======================================================================
@@ -230,6 +229,7 @@ void drawScene(int scene,double) {
 
         if(hasBeenTested) {
             performQuery = true;
+            cout << "Number of frames: ";
             cout << framesWaited << endl;
         } else {
             framesWaited++;
