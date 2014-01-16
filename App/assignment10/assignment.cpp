@@ -20,6 +20,7 @@ GLuint query[16];
 GLuint queryResults[16];
 GLuint params[16];
 
+
 // for part D
 bool performQuery = true;
 bool hasBeenTested = false;
@@ -29,7 +30,7 @@ void drawScene(int scene,double) {
     static int lastScene = 0;
 
     if (scene == 1) {
-        for (int i = 0; i < 16; i++) {queryResults[i] = true;}
+        //for (int i = 0; i < 16; i++) {queryResults[i] = true;}
         for (int i = 0; i < 16; i++) {
                      // =======================================================================
                      // =======================================================================
@@ -46,10 +47,10 @@ void drawScene(int scene,double) {
 
             glBeginQuery(GL_SAMPLES_PASSED, query[i]);
 
-                glColorMask(false, false, false, false);
-                glDepthMask(false);
-                g_bunnyVisibility[i] = false;
-                drawBoundingObject(i);
+            glColorMask(false, false, false, false);
+            glDepthMask(false);
+            g_bunnyVisibility[i] = false;
+            drawBoundingObject(i);
 
             glEndQuery(GL_SAMPLES_PASSED);
 
@@ -59,19 +60,15 @@ void drawScene(int scene,double) {
 
             glGetQueryObjectuiv(query[i], GL_QUERY_RESULT, &params[i]);
 
-            //glBeginConditionalRender(query[i], GL_QUERY_WAIT);
 
-                glColorMask(true, true, true, true);
-                glDepthMask(true);
-                if(params[i] > 0.0) {
-                    g_bunnyVisibility[i] = true;
-                    drawBunny(i);
-                } else {
-                    drawBoundingObject(i);
-                }
-
-            //glEndConditionalRender();
-
+            glColorMask(true, true, true, true);
+            glDepthMask(true);
+            if(params[i] > 0.0) {
+                g_bunnyVisibility[i] = true;
+                drawBunny(i);
+            } else {
+                drawBoundingObject(i);
+            }
 
                      // =======================================================================
                      // End assignment code
@@ -91,41 +88,49 @@ void drawScene(int scene,double) {
                 // =======================================================================
                 // =======================================================================
 
-        bool firstFrame = true;
-        for (int i = 0; i < 16; i++) {
-        
-            glBeginQuery(GL_SAMPLES_PASSED, query[i]);
-
-            glColorMask(false, false, false, false);
-            glDepthMask(false);
-            g_bunnyVisibility[i] = false;
-            drawBoundingObject(i);
-
-            glEndQuery(GL_SAMPLES_PASSED);
-
-            if(firstFrame || queryResults[i]) {
-                if(firstFrame) {
-                    firstFrame = false;
-                } else {
-                    glGetQueryObjectuiv(query[i], GL_QUERY_RESULT, &params[i]);
-                }
-                glGetQueryObjectuiv(query[i], GL_QUERY_RESULT_AVAILABLE, &queryResults[i]);
+        if(lastScene != 2) {
+            for (int i = 0; i < 16; i++) {
+                g_bunnyVisibility[i] = true;
             }
+            performQuery = true;
+        }
 
+        if(performQuery) {
+            for (int i = 0; i < 16; i++) {
+
+                glBeginQuery(GL_SAMPLES_PASSED, query[i]);
+
+                glColorMask(false, false, false, false);
+                glDepthMask(false);
+                g_bunnyVisibility[i] = false;
+                drawBoundingObject(i);
+
+                glEndQuery(GL_SAMPLES_PASSED);
+            }
+            performQuery = false;
+        } else {
+            for (int i = 0; i < 16; i++) {
+                glGetQueryObjectuiv(query[i], GL_QUERY_RESULT_AVAILABLE, &queryResults[i]);
+                if(queryResults[i]) {
+                    performQuery = true;
+                    glGetQueryObjectuiv(query[i], GL_QUERY_RESULT, &params[i]);
+                    if(params[i] > 0.0) {
+                        g_bunnyVisibility[i] = true;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < 16; i++) {
 
             glColorMask(true, true, true, true);
             glDepthMask(true);
-            if(params[i] > 0.0) {
-                g_bunnyVisibility[i] = true;
+            if(g_bunnyVisibility[i]) {
                 drawBunny(i);
             } else {
                 drawBoundingObject(i);
             }
 
-
-                     // =======================================================================
-                     // End assignment code
-                     // =======================================================================
         }
 
                 // =======================================================================
