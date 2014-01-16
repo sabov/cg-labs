@@ -87,6 +87,7 @@ void drawScene(int scene,double) {
                 // =======================================================================
                 // =======================================================================
 
+        //show all bunnies
         if(lastScene != 2) {
             for (int i = 0; i < 16; i++) {
                 g_bunnyVisibility[i] = true;
@@ -94,6 +95,7 @@ void drawScene(int scene,double) {
             performQuery = true;
         }
 
+        //first frame
         if(performQuery) {
             for (int i = 0; i < 16; i++) {
 
@@ -101,23 +103,28 @@ void drawScene(int scene,double) {
 
                 glColorMask(false, false, false, false);
                 glDepthMask(false);
-                g_bunnyVisibility[i] = false;
-                drawBoundingObject(i);
+                drawBunny(i);
 
                 glEndQuery(GL_SAMPLES_PASSED);
             }
             performQuery = false;
         } else {
+            //second frame
             for (int i = 0; i < 16; i++) {
-                glGetQueryObjectuiv(query[i], GL_QUERY_RESULT_AVAILABLE, &queryResults[i]);
-                if(queryResults[i]) {
-                    performQuery = true;
-                    glGetQueryObjectuiv(query[i], GL_QUERY_RESULT, &params[i]);
-                    if(params[i] > 0.0) {
-                        g_bunnyVisibility[i] = true;
-                    }
+
+                do {
+                    glGetQueryObjectuiv(query[i], GL_QUERY_RESULT_AVAILABLE, &queryResults[i]);
+                } while (!queryResults[i]);
+
+                glGetQueryObjectuiv(query[i], GL_QUERY_RESULT, &params[i]);
+
+                if(params[i] > 0.0) {
+                    g_bunnyVisibility[i] = true;
+                } else {
+                    g_bunnyVisibility[i] = false;
                 }
             }
+            performQuery = true;
         }
 
         for (int i = 0; i < 16; i++) {
@@ -129,7 +136,6 @@ void drawScene(int scene,double) {
             } else {
                 drawBoundingObject(i);
             }
-
         }
 
                 // =======================================================================
@@ -195,6 +201,9 @@ void drawScene(int scene,double) {
                 // =======================================================================
                 // =======================================================================
 
+        if(lastScene < 4) {
+            performQuery = true;
+        }
 
         if(performQuery) {
             for (int i = 0; i < 16; i++) {
