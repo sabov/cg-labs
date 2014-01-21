@@ -16,7 +16,7 @@ void main() {
     // =======================================================================
    
     // Replace this code with your solution 
-    oFragColor = vec4(vColor, 5.0f);
+    oFragColor = vec4(vColor, 1.0f);
     
     // =======================================================================
     // End assignment code

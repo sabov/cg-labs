@@ -26,6 +26,7 @@ void main() {
     // =======================================================================
 
     // Replace with your code
+    gl_PointSize = aSplatSize * uScaleToScreen / aPosition.z;
     gl_Position = uProjectionMatrix * uModelViewMatrix * aPosition;
     
     // =======================================================================
