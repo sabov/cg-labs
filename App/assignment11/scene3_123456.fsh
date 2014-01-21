@@ -23,9 +23,17 @@ void main() {
     // =======================================================================
     // =======================================================================
     
+    vec2 viewport = vec2(uWindowWidth, uWindowHeight);
+    vec4 ndcPos;
+    ndcPos.xy = ((2.0 * gl_FragCoord.xy) - (2.0 * viewport.xy)) / (viewport.zw) - 1;
+    ndcPos.z = (2.0 * gl_FragCoord.z - uNear - uFar) / (uFar - uNear);
+    ndcPos.w = 1.0;
+     
+    vec4 clipPos = ndcPos / gl_FragCoord.w;
+    vec4 eyePos = uInverseProjectionMatrix * clipPos;
 
     // Replace with your code
-    oFragColor = vec4(1.0f,0.0f,0.0f, 1.0f);
+    oFragColor = vec4(vColor, 1.0f);
  
     
     // =======================================================================
