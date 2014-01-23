@@ -35,7 +35,6 @@ void main() {
 
     vec2 windowSize = vec2(uWindowWidth, uWindowHeight);
 
-
     vec3 ndcPos;
     ndcPos.xy = gl_FragCoord.xy / windowSize;
     ndcPos.z = gl_FragCoord.z;
@@ -46,14 +45,16 @@ void main() {
     clipPos.xyz = ndcPos * clipPos.w;
     vec4 p = uInverseProjectionMatrix * clipPos;
 
-    float depth = -vNormal.x/vNormal.z * vPosition.x - vNormal.y/vNormal.z * vPosition.y;
-    float distanceToCenter = sqrt(pow(p.x - vPosition.x, 2) + pow(p.y - vPosition.y, 2));
+    vec3 u = normalize(p.xyz-vPosition.xyz);
+    vec3 n = normalize(vNormal);
 
-    if(distanceToCenter > vSplatSize) {
+    float dist = distance(p, vPosition);
+    
+    if(dist > vSplatSize && dot(u,n) > 0.01) {
         discard;
     }
 
-    float alpha = sqrt(1 - distanceToCenter / vSplatSize);
+    float alpha = sqrt(1 - dist/ vSplatSize);
     oFragColor = vec4(vColor, alpha);
 
 

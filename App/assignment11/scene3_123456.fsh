@@ -21,6 +21,7 @@ out vec4 oFragColor;
 #define B (ZNEAR - ZFAR)
 #define C (2.0 * ZNEAR * ZFAR)
 #define D (ndcPos.z * B)
+
 #define ZEYE -(C / (A + D))
 
 void main() {
@@ -31,9 +32,9 @@ void main() {
     // Part C:
     // =======================================================================
     // =======================================================================
-    
+    // Replace with your code
+ 
     vec2 windowSize = vec2(uWindowWidth, uWindowHeight);
-
 
     vec3 ndcPos;
     ndcPos.xy = gl_FragCoord.xy / windowSize;
@@ -45,15 +46,15 @@ void main() {
     clipPos.xyz = ndcPos * clipPos.w;
     vec4 p = uInverseProjectionMatrix * clipPos;
 
-    float depth = -vNormal.x/vNormal.z * vPosition.x - vNormal.y/vNormal.z * vPosition.y;
+    vec3 u = normalize(p.xyz-vPosition.xyz);
+    vec3 n = normalize(vNormal);
 
-    if(pow(p.x - vPosition.x, 2) + pow(p.y - vPosition.y, 2) > pow(vSplatSize, 2)) {
+    float dist = distance(p, vPosition);
+    
+    if(dist > vSplatSize && dot(u,n) > 0.01) {
         discard;
     }
-    oFragColor = vec4(vColor, 1.0f);
-
-    // Replace with your code
- 
+    oFragColor = vec4(vColor,1);
     
     // =======================================================================
     // End assignment code
