@@ -113,9 +113,18 @@ void drawScene(int scene) {
         // =======================================================================
 
         // Replace with your code
-        g_vaoChameleon->render();        
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+        g_vaoChameleon->render();
         g_osBlendSplatShader->setUniform("uRenderPass", (int)1);
 
+        glDepthMask(GL_FALSE);
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        g_vaoChameleon->render();
+
+        glDisable(GL_BLEND);
+        glDepthMask(GL_TRUE);
         // =======================================================================
         // End assignment code
         // =======================================================================
