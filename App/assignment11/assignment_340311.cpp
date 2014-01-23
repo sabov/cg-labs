@@ -33,10 +33,9 @@ ArrayBuffer* g_abChameleon;
 
 // Add your team member's names and matriculation numbers here:
 void printStudents() {
-    cout << "Student Name 0, matriculation number 0" << endl;
-    cout << "Student Name 1, matriculation number 1" << endl;
-    cout << "Student Name 2, matriculation number 2" << endl;
-    cout << "Student Name 3, matriculation number 3" << endl;
+    cout << "Student Tarasenko Petro, matrikel number 340826" << endl;
+    cout << "Student Oleksandr Sabov, matrikel number 340311" << endl;
+    cout << "Student Chih-Yun Tsai, matrikel number 328782" << endl;
 }
 
 void drawScene(int scene) {
@@ -47,7 +46,6 @@ void drawScene(int scene) {
     // Part B: ( required for B-D )
     // =======================================================================
     // =======================================================================
-
 
     // Replace with your code
 
@@ -137,20 +135,20 @@ void drawScene(int scene) {
 void initCustomResources() {
 
     // Initialize shaders:
-    g_simplePointShader = new ShaderProgram("scene1_123456.vsh", "scene1_123456.fsh");
+    g_simplePointShader = new ShaderProgram("scene1_340311.vsh", "scene1_340311.fsh");
     g_simplePointShader->bindAttributeLocation("aPosition",  0);
     g_simplePointShader->bindAttributeLocation("aColor",     2);
     if(!g_simplePointShader->link())
         exit(0);
 
-    g_ssSplatShader = new ShaderProgram("scene2_123456.vsh", "scene2_123456.fsh");
+    g_ssSplatShader = new ShaderProgram("scene2_340311.vsh", "scene2_340311.fsh");
     g_ssSplatShader->bindAttributeLocation("aPosition",  0);
     g_ssSplatShader->bindAttributeLocation("aColor",     2);
     g_ssSplatShader->bindAttributeLocation("aSplatSize", 3);
     if(!g_ssSplatShader->link())
         exit(0);
 
-    g_osSplatShader = new ShaderProgram("scene3_123456.vsh", "scene3_123456.fsh");
+    g_osSplatShader = new ShaderProgram("scene3_340311.vsh", "scene3_340311.fsh");
     g_osSplatShader->bindAttributeLocation("aPosition",  0);
     g_osSplatShader->bindAttributeLocation("aNormal",    1);
     g_osSplatShader->bindAttributeLocation("aColor",     2);
@@ -158,7 +156,7 @@ void initCustomResources() {
     if(!g_osSplatShader->link())
         exit(0);
 
-    g_osBlendSplatShader = new ShaderProgram("scene4_123456.vsh", "scene4_123456.fsh");
+    g_osBlendSplatShader = new ShaderProgram("scene4_340311.vsh", "scene4_340311.fsh");
     g_osBlendSplatShader->bindAttributeLocation("aPosition",  0);
     g_osBlendSplatShader->bindAttributeLocation("aNormal",    1);
     g_osBlendSplatShader->bindAttributeLocation("aColor",     2);
